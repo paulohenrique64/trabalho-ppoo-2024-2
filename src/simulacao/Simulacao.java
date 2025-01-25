@@ -31,7 +31,12 @@ public class Simulacao {
             int y;
 
             while ((linha = leitor.readLine()) != null) {
-                String[] coordenasString = linha.split(";");
+                String[] coordenasString = linha.split(" ");
+                coordenasString = coordenasString[1].split("\"");
+                coordenasString = coordenasString[1].split(";");
+
+
+                // System.out.println(coordenasString[0] + " " + coordenasString[1]);
 
                 x = Integer.parseInt(coordenasString[0]);
                 y = Integer.parseInt(coordenasString[1]);
