@@ -7,7 +7,7 @@ import util.Localizacao;
 import veiculos.Veiculo;
 
 public class Estacionamento {
-    private static int LARGURA_PADRAO_MAPA = 50;
+    private static int LARGURA_PADRAO_MAPA = 94;
     private static int ALTURA_PADRAO_MAPA = 50;
     private List<Veiculo> veiculos;   
     private List<Localizacao> vagasDisponiveis;

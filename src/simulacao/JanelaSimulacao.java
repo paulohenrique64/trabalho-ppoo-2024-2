@@ -16,9 +16,10 @@ public class JanelaSimulacao extends JFrame {
         visaoEstacionamento = new VisaoEstacionamento(estacionamento.getLargura(), estacionamento.getAltura());
         getContentPane().add(visaoEstacionamento);
         setTitle("Simulator");
-        setSize(1000, 1000);
+        setSize(940, 500);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+        visaoEstacionamento.preparePaint();
     }
 
     // public void atualizarVeiculo(Veiculo veiculo) {
@@ -75,7 +76,7 @@ public class JanelaSimulacao extends JFrame {
             // preparePaint();
 
             // Carregar a imagem de fundo
-            //imagemFundo = new ImageIcon("src/Imagens/estacionamento.png").getImage(); // Substitua pelo caminho correto
+            imagemFundo = new ImageIcon("src/Imagens/estacionamento.png").getImage(); // Substitua pelo caminho correto
             // System.out.println(imagemFundo); // Confirma se a imagem foi carregada corretamente
         }
 
@@ -112,22 +113,22 @@ public class JanelaSimulacao extends JFrame {
             }
 
             if (g == null) {
-                System.out.println("g eh nulo");
                 return;
             }
 
             // Desenhar o fundo branco e a grade
-            g.setColor(Color.white);
-            g.fillRect(0, 0, tamanho.width, tamanho.height);
+            // g.setColor(Color.WHITE);
+            // g.fillRect(0, 0, tamanho.width, tamanho.height);
 
-            // Desenhar a grade (linhas horizontais e verticais)
-            g.setColor(Color.gray);
-            for (int i = 0, x = 0; x < tamanho.width; i++, x = i * xScale) {
-                g.drawLine(x, 0, x, tamanho.height - 1);
-            }
-            for (int i = 0, y = 0; y < tamanho.height; i++, y = i * yScale) {
-                g.drawLine(0, y, tamanho.width - 1, y);
-            }
+            // // Desenhar a grade (linhas horizontais e verticais)
+            // g.setColor(Color.gray);
+            // for (int i = 0, x = 0; x < tamanho.width; i++, x = i * xScale) {
+            //     g.drawLine(x, 0, x, tamanho.height - 1);
+            // }
+            // for (int i = 0, y = 0; y < tamanho.height; i++, y = i * yScale) {
+            //     g.drawLine(0, y, tamanho.width - 1, y);
+            // }
+
             // Desenhar o fundo primeiro
             g.drawImage(imagemFundo, 0, 0, tamanho.width, tamanho.height, this);
         }
