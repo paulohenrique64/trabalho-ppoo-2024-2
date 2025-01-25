@@ -10,6 +10,7 @@ import java.util.List;
 import mapa.Estacionamento;
 import util.Localizacao;
 import veiculos.Carro;
+import veiculos.Moto;
 import veiculos.Veiculo;
 
 public class Simulacao {
@@ -22,57 +23,63 @@ public class Simulacao {
     }
 
     public void iniciarSimulacao() {
-        Veiculo veiculo = new Carro(new Localizacao(10, 10), 4);
-        estacionamento.estacionarVeiculo(veiculo);
+        List<Veiculo> veiculosRodando = new ArrayList<>();
+        veiculosRodando.add(new Moto(new Localizacao(10, 10), 4));
+        veiculosRodando.add(new Carro(new Localizacao(10, 10), 4));
+        
+       
 
-         try (BufferedReader leitor = new BufferedReader(new FileReader("data/vaga-estacionamento-1-caminho.txt"))) {
-            String linha;
-            int x;
-            int y;
+        for (int i = 0; i < veiculosRodando.size(); i++) {
+            final int index = i;
 
-            while ((linha = leitor.readLine()) != null) {
-                String[] coordenasString = linha.split(" ");
-                coordenasString = coordenasString[1].split("\"");
-                coordenasString = coordenasString[1].split(";");
+            
+            Thread teste = new Thread(new Runnable() {
+               
+                @Override
+                public void run() {
+                    System.out.println(" thread do " + veiculosRodando.get(index).getClass().getName());
+                    estacionamento.estacionarVeiculo(veiculosRodando.get(index));
 
+                    try (BufferedReader leitor = new BufferedReader(
+                            new FileReader("data/vaga-estacionamento-"+(index + 1)+"-caminho.txt"))) {
+                        String linha;
+                        int x;
+                        int y;
 
-                // System.out.println(coordenasString[0] + " " + coordenasString[1]);
+                        while ((linha = leitor.readLine()) != null) {
+                            String[] coordenasString = linha.split(" ");
+                            coordenasString = coordenasString[1].split("\"");
+                            coordenasString = coordenasString[1].split(";");
 
-                x = Integer.parseInt(coordenasString[0]);
-                y = Integer.parseInt(coordenasString[1]);
+                            x = Integer.parseInt(coordenasString[0]);
+                            y = Integer.parseInt(coordenasString[1]);
 
-                System.out.println(x + " " + y);
+                            // System.out.println("colocando a " + veiculosRodando.get(index).getClass().getName() + " na coordenada " + x + " " + y);
 
-                estacionamento.removerItem(veiculo);
-                veiculo.setLocalizacaoAtual(new Localizacao(x, y));
-                estacionamento.adicionarItem(veiculo);
+                            // System.out.println(x + " " + y);
 
-                janelaSimulacao.atualizarJanelaSimulacao();
-                // estacionamento.atualizarEstacionamento(veiculo);
-                // janelaSimulacao.atualizarJanelaSimulacao();
-                try {
-                    Thread.sleep(50);
-                } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                            estacionamento.removerItem(veiculosRodando.get(index));
+                            veiculosRodando.get(index).setLocalizacaoAtual(new Localizacao(y, x));
+                            estacionamento.adicionarItem(veiculosRodando.get(index));
+
+                            janelaSimulacao.atualizarJanelaSimulacao();
+                            try {
+                                Thread.sleep(10);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } catch (IOException e) {
+                        System.err.println("Erro ao ler o arquivo: " + e.getMessage());
+                    }
+
+                    // após o tempo aleatório o carro desaparece do mapa e deixa a vaga disponível
+                    estacionamento.desestacionarVeiculo(veiculosRodando.get(index));
                 }
-            }
-        } catch (IOException e) {
-            System.err.println("Erro ao ler o arquivo: " + e.getMessage());
+            });
+
+            // Agora você deve iniciar o thread
+            teste.start();
         }
-
-        
-
-        // inicio do algortimo dijkstra enquanto atualiza o carro no mapa indo ate a vaga
-
-
-
-        // fim do algoritmo dijkstra quando o carro chega na vaga e espera por um tempo aleatorio
-        
-
-
-
-        // apos o tempo aleatorio o carro desaparece do mapa e deixa a vaga disponivel para outro carro
-        estacionamento.desestacionarVeiculo(veiculo);
     }
 }

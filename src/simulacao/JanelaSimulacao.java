@@ -38,7 +38,7 @@ public class JanelaSimulacao extends JFrame {
 
                 for (Veiculo veiculo : veiculosNaPosicao) {
                     Localizacao localizacao = veiculo.getLocalizacaoAtual();
-                    visaoEstacionamento.desenharImagem(localizacao.getX(), localizacao.getY(), veiculo.getImagem());
+                    visaoEstacionamento.desenharImagem(localizacao.getX(), localizacao.getY(), veiculo.getImagem(), veiculo.espacoOcupado());
                 }
 
             }
@@ -72,9 +72,11 @@ public class JanelaSimulacao extends JFrame {
             setBackground(Color.white);
             tamanho = new Dimension(0, 0);
 
+            // preparePaint();
+
             // Carregar a imagem de fundo
-            imagemFundo = new ImageIcon("src/Imagens/estacionamento.png").getImage(); // Substitua pelo caminho correto
-            System.out.println(imagemFundo); // Confirma se a imagem foi carregada corretamente
+            //imagemFundo = new ImageIcon("src/Imagens/estacionamento.png").getImage(); // Substitua pelo caminho correto
+            // System.out.println(imagemFundo); // Confirma se a imagem foi carregada corretamente
         }
 
         /**
@@ -84,6 +86,10 @@ public class JanelaSimulacao extends JFrame {
             return new Dimension(larguraEstacionamento * VIEW_SCALING_FACTOR,
                     alturaEstacionamento * VIEW_SCALING_FACTOR);
         }
+
+        // public void createGraphics() {
+            
+        // }
 
         /**
          * Prepara para um novo ciclo de exibição. Uma vez que o componente
@@ -105,6 +111,11 @@ public class JanelaSimulacao extends JFrame {
                 }
             }
 
+            if (g == null) {
+                System.out.println("g eh nulo");
+                return;
+            }
+
             // Desenhar o fundo branco e a grade
             g.setColor(Color.white);
             g.fillRect(0, 0, tamanho.width, tamanho.height);
@@ -124,9 +135,12 @@ public class JanelaSimulacao extends JFrame {
         /**
          * Desenha a imagem para um determinado item.
          */
-        public void desenharImagem(int x, int y, Image image) {
+        public void desenharImagem(int x, int y, Image image, Localizacao espacoOcupado) {
+            int imageWidth = xScale * espacoOcupado.getX(); // 3x wider
+            int imageHeight = yScale * espacoOcupado.getY(); // 3x taller]
+
             g.drawImage(image, x * xScale + 1, y * yScale + 1,
-                    xScale - 1, yScale - 1, this);
+            imageWidth - 1, imageHeight - 1, this);
         }
 
         /**

@@ -1,6 +1,5 @@
 package veiculos;
 import java.awt.Image;
-import javax.swing.ImageIcon;
 
 import util.Localizacao;
 
@@ -11,11 +10,10 @@ public abstract class Veiculo {
     private String placa;
     private String cor;
 
-    public Veiculo(Localizacao localizacao) {
+    public Veiculo(Localizacao localizacao, Image imagem) {
         this.localizacaoAtual = localizacao;
         localizacaoDestino = null;
-        // System.out.println(getClass().getResource("Imagens/veiculo.png"));
-        imagem = new ImageIcon("src/Imagens/veiculo.png").getImage();
+        this.imagem = imagem;
     }
 
     public Localizacao getLocalizacaoAtual() {
@@ -53,4 +51,6 @@ public abstract class Veiculo {
     public String getCor() {
         return cor;
     } 
+
+    public abstract Localizacao espacoOcupado();
 }
