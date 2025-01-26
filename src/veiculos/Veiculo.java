@@ -56,4 +56,11 @@ public abstract class Veiculo {
     }
     
     public abstract Number getValorEstacionamento();
+
+    public Localizacao getProximaLocalizacao(){
+      if(caminho.peek() != null){
+      return caminho.peek();
+      }
+      return getLocalizacaoAtual();
+    }
 }

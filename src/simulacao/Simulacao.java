@@ -110,12 +110,14 @@ public class Simulacao {
 
       while (!algumVeiculoChegouNaVaga) {
         for (Veiculo v : veiculos) {
-          if (!v.executarAcao()) {
+          if(v.getProximaLocalizacao() != null){
+          if (estacionamento.getVeiculoNaPosicao(v.getProximaLocalizacao().getY()+3, v.getProximaLocalizacao().getX()+3).size() == 0 && !v.executarAcao()) {
             janelaSimulacao.atualizarFaturamento(estacionamento.getFaturamento());
             estacionamento.desestacionarVeiculo(v);
             algumVeiculoChegouNaVaga = true;
             veiculosParaRemover.add(v);
           }
+        }
         }
         janelaSimulacao.atualizarJanelaSimulacao();
 
