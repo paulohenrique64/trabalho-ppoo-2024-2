@@ -1,17 +1,18 @@
 package veiculos;
 
 import java.util.Queue;
-import java.util.Stack;
-
-import javax.swing.ImageIcon;
 
 import util.Localizacao;
 
+/**
+ * Representa a entidate Moto
+ * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
+ */
 public class Moto extends Veiculo {
     private int quantidadeRodas;
 
-    public Moto(Localizacao localizacao, Queue<Localizacao> caminho, int quantidadeRodas) {
-        super(localizacao, caminho, new ImageIcon("src/Imagens/moto.png").getImage());
+    public Moto(String placa, Localizacao localizacao, Queue<Localizacao> caminho, int quantidadeRodas) {
+        super(placa, localizacao, caminho);
         this.quantidadeRodas = quantidadeRodas;
     }
 
@@ -20,12 +21,7 @@ public class Moto extends Veiculo {
     }
 
     @Override
-    public Localizacao espacoOcupado() {
-        return new Localizacao(3,4);
-    }
-
-    @Override
-    public Double getValorEstacionamento() {
-        return 7.5;
+    public Localizacao getEspacoOcupado() {
+        return new Localizacao(4,4);
     }
 }

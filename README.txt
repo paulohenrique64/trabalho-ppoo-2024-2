@@ -1,0 +1,1 @@
+Comando para gerar a documentação: javadoc -d doc -sourcepath src -subpackages mapa simulacao util veiculos

@@ -4,26 +4,25 @@ import java.time.LocalDateTime;
 
 import veiculos.Veiculo;
 
+/**
+ * Representa a entidate Ticket, utilizada para armazenar e manipular
+ * dados referentes a entrada e saída de veículos de estacionamentos
+ * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
+ */
 public class Ticket {
     private Veiculo veiculo;
     private LocalDateTime horaChegada;
-    private Double valorTotal;
 
     public Ticket(Veiculo veiculo) {
         this.veiculo = veiculo;
         horaChegada = LocalDateTime.now();
-        valorTotal = 0D;
     }
 
-    public Veiculo getVeiculo() {
-        return veiculo;
+    public Double getCustoEstacionamento() {
+        return horaChegada.getSecond() / 7.0 * veiculo.getEspacoOcupado().getX();
     }
 
-    public LocalDateTime getHoraChegada() {
-        return horaChegada;
-    }
-
-    public Double calcularValorGasto() {
-        return 10D;
+    public String getPlacaVeiculo() {
+        return veiculo.getPlaca();
     }
 }

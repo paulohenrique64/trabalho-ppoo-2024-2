@@ -7,27 +7,31 @@ import mapa.Estacionamento;
 import util.Localizacao;
 import veiculos.Veiculo;
 
+/**
+ * Representa a interface so sistema onde os veículos serão desenhados a cada atualização da tela
+ * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
+ */
 public class JanelaSimulacao extends JFrame {
     private Estacionamento estacionamento;
     private VisaoEstacionamento visaoEstacionamento;
     private JLabel faturamentoLabel;
 
-    public JanelaSimulacao(Estacionamento estacionamento) {
+    public JanelaSimulacao(Estacionamento estacionamento, Simulacao simulacao) {
         this.estacionamento = estacionamento;
         visaoEstacionamento = new VisaoEstacionamento(estacionamento.getLargura(), estacionamento.getAltura());
-        
+
         faturamentoLabel = new JLabel("Faturamento: R$ 0.00");
         faturamentoLabel.setFont(new Font("Arial", Font.BOLD, 14));
         faturamentoLabel.setForeground(Color.BLACK);
-        
+
         JPanel topPanel = new JPanel();
         topPanel.add(faturamentoLabel);
-        
+
         // Add components
         setLayout(new BorderLayout());
         add(topPanel, BorderLayout.NORTH);
         add(visaoEstacionamento, BorderLayout.CENTER);
-        
+
         setTitle("Simulador de Estacionamento");
         pack();
         ajustarTamanhoExato(940, 500);
@@ -36,15 +40,13 @@ public class JanelaSimulacao extends JFrame {
     }
 
     private void ajustarTamanhoExato(int largura, int altura) {
-        Insets insets = getInsets(); // Obtém as bordas do JFrame
+        Insets insets = getInsets(); // obtem as bordas do JFrame
         int larguraTotal = largura + insets.left + insets.right;
         int alturaTotal = altura + insets.top + insets.bottom;
-        setSize(larguraTotal, alturaTotal); // Define o tamanho total do JFrame
+        setSize(larguraTotal, alturaTotal); // define o tamanho total do JFrame
     }
 
-    /**
-     * Mostra o estado atual do mapa.
-     */
+    // Mostra o estado atual do mapa.
     public void atualizarJanelaSimulacao() {
         visaoEstacionamento.preparePaint();
 
@@ -54,7 +56,8 @@ public class JanelaSimulacao extends JFrame {
 
                 for (Veiculo veiculo : veiculosNaPosicao) {
                     Localizacao localizacao = veiculo.getLocalizacaoAtual();
-                    visaoEstacionamento.desenharImagem(localizacao.getX(), localizacao.getY(), veiculo.getImagem(), veiculo.espacoOcupado());
+                    visaoEstacionamento.desenharImagem(localizacao.getX(), localizacao.getY(), veiculo.getImagem(),
+                            veiculo.getEspacoOcupado());
                 }
 
             }
@@ -63,12 +66,10 @@ public class JanelaSimulacao extends JFrame {
         visaoEstacionamento.repaint();
     }
 
-    /**
-     * Fornece uma visualizacao grafica do mapa. Esta eh
-     * uma classe interna que define os componentes da GUI.
-     * Ela contém alguns detalhes mais avancados sobre GUI
-     * que voce pode ignorar para realizacao do seu trabalho.
-     */
+    // Fornece uma visualizacao grafica do mapa. Esta eh
+    // uma classe interna que define os componentes da GUI.
+    // Ela contém alguns detalhes mais avancados sobre GUI
+    // que voce pode ignorar para realizacao do seu trabalho.
     private class VisaoEstacionamento extends JPanel {
 
         private final int VIEW_SCALING_FACTOR = 10;
@@ -79,31 +80,27 @@ public class JanelaSimulacao extends JFrame {
         private Image imagemEstacionamento;
         private Image imagemFundo; // Imagem de fundo
 
-        /**
-         * Cria um novo componente VisaoEstacionamento.
-         */
+        // Cria um novo componente VisaoEstacionamento.
         public VisaoEstacionamento(int largura, int altura) {
             larguraEstacionamento = largura;
             alturaEstacionamento = altura;
 
             setBackground(Color.white);
-            tamanho = new Dimension(0, 0);;
+            tamanho = new Dimension(0, 0);
+            ;
 
             // Carregar a imagem de fundo
-            imagemFundo = new ImageIcon("src/Imagens/estacionamento.png").getImage(); 
+            imagemFundo = new ImageIcon("src/imagens/estacionamento.png").getImage();
         }
 
-        /**
-         * Informa para o gerenciador GUI o tamanho.
-         */
+        // Informa para o gerenciador GUI o tamanho.
         public Dimension getPreferredSize() {
-            return new Dimension(larguraEstacionamento * VIEW_SCALING_FACTOR, alturaEstacionamento * VIEW_SCALING_FACTOR);
+            return new Dimension(larguraEstacionamento * VIEW_SCALING_FACTOR,
+                    alturaEstacionamento * VIEW_SCALING_FACTOR);
         }
 
-        /**
-         * Prepara para um novo ciclo de exibição. Uma vez que o componente
-         * pode ser redimensionado, calcula o "fator de escala" novamente.
-         */
+        // Prepara para um novo ciclo de exibição. Uma vez que o componente
+        // pode ser redimensionado, calcula o "fator de escala" novamente.
         public void preparePaint() {
             if (!tamanho.equals(getSize())) { // Se o tamanho mudou...
                 tamanho = getSize();
@@ -126,46 +123,30 @@ public class JanelaSimulacao extends JFrame {
                 return;
             }
 
-            // Desenhar o fundo branco e a grade
-            // g.setColor(Color.WHITE);
-            // g.fillRect(0, 0, tamanho.width, tamanho.height);
-
-            // // Desenhar a grade (linhas horizontais e verticais)
-            // g.setColor(Color.gray);
-            // for (int i = 0, x = 0; x < tamanho.width; i++, x = i * xScale) {
-            //     g.drawLine(x, 0, x, tamanho.height - 1);
-            // }
-            // for (int i = 0, y = 0; y < tamanho.height; i++, y = i * yScale) {
-            //     g.drawLine(0, y, tamanho.width - 1, y);
-            // }
-
             // Desenhar o fundo primeiro
             g.drawImage(imagemFundo, 0, 0, tamanho.width, tamanho.height, this);
         }
 
-        /**
-         * Desenha a imagem para um determinado item.
-         */
+        // Desenha a imagem para um determinado item.
         public void desenharImagem(int x, int y, Image image, Localizacao espacoOcupado) {
             int imageWidth = xScale * espacoOcupado.getX(); // 3x wider
             int imageHeight = yScale * espacoOcupado.getY(); // 3x taller]
 
-            g.drawImage(image, x * xScale + 1, y * yScale + 1, imageWidth - 1, imageHeight - 1, this);
+            g.drawImage(image, x * xScale - (imageWidth / 2 - espacoOcupado.getX()),
+                    y * yScale - (imageHeight / 2 - espacoOcupado.getY()), imageWidth, imageHeight, this);
         }
 
-        /**
-         * O componente VisaoMapa precisa ser reexibido. Copia a
-         * imagem interna para a tela.
-         */
+        // componente VisaoMapa precisa ser reexibido. Copia a
+        // imagem interna para a tela.
         public void paintComponent(Graphics g) {
             if (imagemEstacionamento != null) {
                 g.drawImage(imagemEstacionamento, 0, 0, null);
             }
         }
     }
-    public void atualizarFaturamento(Double valor) {
-      faturamentoLabel.setText(String.format("Faturamento: R$ %.2f", valor));
-  }
-  
-}
 
+    public void atualizarFaturamento(Double valor) {
+        faturamentoLabel.setText(String.format("Faturamento: R$ %.2f", valor));
+    }
+
+}

@@ -1,18 +1,18 @@
 package veiculos;
 
-import java.awt.Image;
 import java.util.Queue;
-import java.util.Stack;
-
-import javax.swing.ImageIcon;
 
 import util.Localizacao;
 
+/**
+ * Representa a entidate Carro 
+ * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
+ */
 public class Carro extends Veiculo {
     private int quantidadePortas;
 
-    public Carro(Localizacao localizacao, Queue<Localizacao> caminho, int quantidadePortas) {
-        super(localizacao, caminho, new ImageIcon("src/Imagens/carro.png").getImage());
+    public Carro(String placa, Localizacao localizacao, Queue<Localizacao> caminho, int quantidadePortas) {
+        super(placa, localizacao, caminho);
         this.quantidadePortas = quantidadePortas;
     }
 
@@ -21,13 +21,7 @@ public class Carro extends Veiculo {
     }
 
     @Override
-    public Localizacao espacoOcupado() {
-        return new Localizacao(5, 4);
+    public Localizacao getEspacoOcupado() {
+        return new Localizacao(8, 7);
     }
-
-    @Override
-    public Integer getValorEstacionamento() {
-        return 10;
-    }
-
 }

@@ -1,19 +1,22 @@
 package mapa;
+
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Stack;
 
-import util.Localizacao;
 import veiculos.Veiculo;
 
+/**
+ * Representa a entidate Estacionamento onde ocorrerá toda a lógica/fluxo de veículos entrando e saindo
+ * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
+ */
 public class Estacionamento {
     private static int LARGURA_PADRAO_MAPA = 94;
     private static int ALTURA_PADRAO_MAPA = 50;
     private Map<Veiculo, Integer> veiculosEstacionados;
-    private List<Integer> vagasDisponiveis;
+    private List<Integer> vagasDisponiveis; // 0 a 19 -> vagas de carros | 20 a 31 -> vagas de moto 
     private Atendimento atendimento;
     
     public Estacionamento() {
@@ -21,7 +24,7 @@ public class Estacionamento {
         vagasDisponiveis = new ArrayList<>();
         atendimento = new Atendimento();
 
-        for (int i = 0; i < 14; i++) {
+        for (int i = 0; i < 32; i++) {
             vagasDisponiveis.add(i);
         }
     }
@@ -31,7 +34,26 @@ public class Estacionamento {
     }
 
     public int getVagaDisponivel() {
-        return vagasDisponiveis.get(vagasDisponiveis.size() - 1);
+        if (!existeVagaDisponivel()) 
+            return -1;
+
+        return vagasDisponiveis.getLast();
+    }
+
+    public int getVagaDisponivel(int rangeInicial, int rangeFinal) {
+        List<Integer> vagasPossiveis = new ArrayList<>();
+        Random random = new Random();
+
+        for (int vaga : vagasDisponiveis) {
+            if (vaga >= rangeInicial && vaga <= rangeFinal) {
+                vagasPossiveis.add(vaga);
+            }
+        }
+
+        if (vagasPossiveis.size() == 0)
+            return -1;
+
+        return vagasPossiveis.get(random.nextInt(0, vagasPossiveis.size()));
     }
 
     public void estacionarVeiculo(Veiculo v, int numeroVaga) {
@@ -75,7 +97,7 @@ public class Estacionamento {
     }
 
     public Double getFaturamento() {
-        return atendimento.calcularFaturamento();
+        return atendimento.getFaturamento();
     }
 
     public Atendimento getAtendimento() {
