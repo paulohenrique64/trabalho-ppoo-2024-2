@@ -1,27 +1,25 @@
 package veiculos;
 import java.awt.Image;
+import java.util.Queue;
+import java.util.Stack;
 
 import util.Localizacao;
 
 public abstract class Veiculo {
     private Localizacao localizacaoAtual;
-    private Localizacao localizacaoDestino;
+    private Queue<Localizacao> caminho;
     private Image imagem;
     private String placa;
     private String cor;
 
-    public Veiculo(Localizacao localizacao, Image imagem) {
+    public Veiculo(Localizacao localizacao, Queue<Localizacao> caminho, Image imagem) {
         this.localizacaoAtual = localizacao;
-        localizacaoDestino = null;
+        this.caminho = caminho;
         this.imagem = imagem;
     }
 
     public Localizacao getLocalizacaoAtual() {
         return localizacaoAtual;
-    }
-
-    public Localizacao getLocalizacaoDestino() {
-        return localizacaoDestino;
     }
     
     public Image getImagem() {
@@ -32,16 +30,14 @@ public abstract class Veiculo {
         this.localizacaoAtual = localizacaoAtual;
     }
 
-    public void setLocalizacaoDestino(Localizacao localizacaoDestino) {
-        this.localizacaoDestino = localizacaoDestino;
-    }
-    
-    public void executarAcao(){
-        Localizacao destino = getLocalizacaoDestino();
-        if(destino != null){
-            Localizacao proximaLocalizacao = getLocalizacaoAtual().proximaLocalizacao(localizacaoDestino);
-            setLocalizacaoAtual(proximaLocalizacao);
-        }
+    public boolean executarAcao() {
+        if (caminho.size() == 0)
+            return false;
+
+        Localizacao proximaLocalizacao = caminho.poll();
+        setLocalizacaoAtual(proximaLocalizacao);
+
+        return true;
     }
 
     public String getPlaca() {
@@ -53,4 +49,9 @@ public abstract class Veiculo {
     } 
 
     public abstract Localizacao espacoOcupado();
+
+    @Override
+    public String toString() {
+        return "Veiculo [localizacaoAtual=" + localizacaoAtual + ", placa=" + placa + ", cor=" + cor + "]";
+    }
 }

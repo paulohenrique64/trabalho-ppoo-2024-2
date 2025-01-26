@@ -1,5 +1,8 @@
 package veiculos;
 
+import java.util.Queue;
+import java.util.Stack;
+
 import javax.swing.ImageIcon;
 
 import util.Localizacao;
@@ -7,8 +10,8 @@ import util.Localizacao;
 public class Moto extends Veiculo {
     private int quantidadeRodas;
 
-    public Moto(Localizacao localizacao, int quantidadeRodas) {
-        super(localizacao, new ImageIcon("src/Imagens/moto.png").getImage());
+    public Moto(Localizacao localizacao, Queue<Localizacao> caminho, int quantidadeRodas) {
+        super(localizacao, caminho, new ImageIcon("src/Imagens/moto.png").getImage());
         this.quantidadeRodas = quantidadeRodas;
     }
 

@@ -14,18 +14,21 @@ public class JanelaSimulacao extends JFrame {
     public JanelaSimulacao(Estacionamento estacionamento) {
         this.estacionamento = estacionamento;
         visaoEstacionamento = new VisaoEstacionamento(estacionamento.getLargura(), estacionamento.getAltura());
+
         getContentPane().add(visaoEstacionamento);
-        setTitle("Simulator");
-        setSize(940, 500);
+        setTitle("Simulator de Estacionamento");
+        pack();
+        ajustarTamanhoExato(940, 500);
         setVisible(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        visaoEstacionamento.preparePaint();
     }
 
-    // public void atualizarVeiculo(Veiculo veiculo) {
-    // visaoEstacionamento.desenharImagem(veiculo.getLocalizacaoAtual().getX(),
-    // veiculo.getLocalizacaoAtual().getY(), veiculo.getImagem());
-    // }
+    private void ajustarTamanhoExato(int largura, int altura) {
+        Insets insets = getInsets(); // Obtém as bordas do JFrame
+        int larguraTotal = largura + insets.left + insets.right;
+        int alturaTotal = altura + insets.top + insets.bottom;
+        setSize(larguraTotal, alturaTotal); // Define o tamanho total do JFrame
+    }
 
     /**
      * Mostra o estado atual do mapa.
@@ -35,7 +38,7 @@ public class JanelaSimulacao extends JFrame {
 
         for (int i = 0; i < estacionamento.getAltura(); i++) {
             for (int j = 0; j < estacionamento.getLargura(); j++) {
-                java.util.List<Veiculo> veiculosNaPosicao = estacionamento.getVeiculo(i, j);
+                java.util.List<Veiculo> veiculosNaPosicao = estacionamento.getVeiculoNaPosicao(i, j);
 
                 for (Veiculo veiculo : veiculosNaPosicao) {
                     Localizacao localizacao = veiculo.getLocalizacaoAtual();
@@ -56,7 +59,7 @@ public class JanelaSimulacao extends JFrame {
      */
     private class VisaoEstacionamento extends JPanel {
 
-        private final int VIEW_SCALING_FACTOR = 6;
+        private final int VIEW_SCALING_FACTOR = 10;
         private int larguraEstacionamento, alturaEstacionamento;
         private int xScale, yScale;
         private Dimension tamanho;
@@ -70,27 +73,20 @@ public class JanelaSimulacao extends JFrame {
         public VisaoEstacionamento(int largura, int altura) {
             larguraEstacionamento = largura;
             alturaEstacionamento = altura;
-            setBackground(Color.white);
-            tamanho = new Dimension(0, 0);
 
-            // preparePaint();
+            setBackground(Color.white);
+            tamanho = new Dimension(0, 0);;
 
             // Carregar a imagem de fundo
-            imagemFundo = new ImageIcon("src/Imagens/estacionamento.png").getImage(); // Substitua pelo caminho correto
-            // System.out.println(imagemFundo); // Confirma se a imagem foi carregada corretamente
+            imagemFundo = new ImageIcon("src/Imagens/estacionamento.png").getImage(); 
         }
 
         /**
          * Informa para o gerenciador GUI o tamanho.
          */
         public Dimension getPreferredSize() {
-            return new Dimension(larguraEstacionamento * VIEW_SCALING_FACTOR,
-                    alturaEstacionamento * VIEW_SCALING_FACTOR);
+            return new Dimension(larguraEstacionamento * VIEW_SCALING_FACTOR, alturaEstacionamento * VIEW_SCALING_FACTOR);
         }
-
-        // public void createGraphics() {
-            
-        // }
 
         /**
          * Prepara para um novo ciclo de exibição. Uma vez que o componente
@@ -99,7 +95,9 @@ public class JanelaSimulacao extends JFrame {
         public void preparePaint() {
             if (!tamanho.equals(getSize())) { // Se o tamanho mudou...
                 tamanho = getSize();
+
                 imagemEstacionamento = visaoEstacionamento.createImage(tamanho.width, tamanho.height);
+
                 g = imagemEstacionamento.getGraphics();
 
                 xScale = tamanho.width / larguraEstacionamento;
@@ -140,8 +138,7 @@ public class JanelaSimulacao extends JFrame {
             int imageWidth = xScale * espacoOcupado.getX(); // 3x wider
             int imageHeight = yScale * espacoOcupado.getY(); // 3x taller]
 
-            g.drawImage(image, x * xScale + 1, y * yScale + 1,
-            imageWidth - 1, imageHeight - 1, this);
+            g.drawImage(image, x * xScale + 1, y * yScale + 1, imageWidth - 1, imageHeight - 1, this);
         }
 
         /**
@@ -149,8 +146,6 @@ public class JanelaSimulacao extends JFrame {
          * imagem interna para a tela.
          */
         public void paintComponent(Graphics g) {
-            super.paintComponent(g); // Chama o método da superclasse para garantir que a pintura seja feita
-                                     // corretamente
             if (imagemEstacionamento != null) {
                 g.drawImage(imagemEstacionamento, 0, 0, null);
             }
