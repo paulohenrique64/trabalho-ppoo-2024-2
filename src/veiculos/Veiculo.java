@@ -54,4 +54,6 @@ public abstract class Veiculo {
     public String toString() {
         return "Veiculo [localizacaoAtual=" + localizacaoAtual + ", placa=" + placa + ", cor=" + cor + "]";
     }
+    
+    public abstract Number getValorEstacionamento();
 }

@@ -23,4 +23,9 @@ public class Moto extends Veiculo {
     public Localizacao espacoOcupado() {
         return new Localizacao(3,4);
     }
+
+    @Override
+    public Double getValorEstacionamento() {
+        return 7.5;
+    }
 }

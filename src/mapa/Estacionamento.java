@@ -19,6 +19,7 @@ public class Estacionamento {
     public Estacionamento() {
         veiculosEstacionados = new LinkedHashMap<>();
         vagasDisponiveis = new ArrayList<>();
+        atendimento = new Atendimento();
 
         for (int i = 0; i < 14; i++) {
             vagasDisponiveis.add(i);
@@ -30,22 +31,22 @@ public class Estacionamento {
     }
 
     public int getVagaDisponivel() {
-        return vagasDisponiveis.getLast();
+        return vagasDisponiveis.get(vagasDisponiveis.size() - 1);
     }
 
     public void estacionarVeiculo(Veiculo v, int numeroVaga) {
         vagasDisponiveis.remove(Integer.valueOf(numeroVaga));
         veiculosEstacionados.put(v, numeroVaga);
+        atendimento.gerarNovoTicket(v);
     }
 
     public boolean desestacionarVeiculo(Veiculo v) {
         if (!veiculosEstacionados.containsKey(v))
             return false;
 
-        // liberar a vaga
         vagasDisponiveis.add(veiculosEstacionados.get(v));
-
         veiculosEstacionados.remove(v);
+        atendimento.finalizarTicket(v);
 
         return true;
     }
@@ -65,15 +66,6 @@ public class Estacionamento {
         return veiculosEstacionados.size();
     }
 
-
-
-
-
-
-
-
-
-
     public int getAltura() {
         return ALTURA_PADRAO_MAPA;
     }
@@ -84,5 +76,9 @@ public class Estacionamento {
 
     public Double getFaturamento() {
         return atendimento.calcularFaturamento();
+    }
+
+    public Atendimento getAtendimento() {
+        return atendimento;
     }
 }

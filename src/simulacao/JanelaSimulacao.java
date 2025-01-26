@@ -10,13 +10,25 @@ import veiculos.Veiculo;
 public class JanelaSimulacao extends JFrame {
     private Estacionamento estacionamento;
     private VisaoEstacionamento visaoEstacionamento;
+    private JLabel faturamentoLabel;
 
     public JanelaSimulacao(Estacionamento estacionamento) {
         this.estacionamento = estacionamento;
         visaoEstacionamento = new VisaoEstacionamento(estacionamento.getLargura(), estacionamento.getAltura());
-
-        getContentPane().add(visaoEstacionamento);
-        setTitle("Simulator de Estacionamento");
+        
+        faturamentoLabel = new JLabel("Faturamento: R$ 0.00");
+        faturamentoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        faturamentoLabel.setForeground(Color.BLACK);
+        
+        JPanel topPanel = new JPanel();
+        topPanel.add(faturamentoLabel);
+        
+        // Add components
+        setLayout(new BorderLayout());
+        add(topPanel, BorderLayout.NORTH);
+        add(visaoEstacionamento, BorderLayout.CENTER);
+        
+        setTitle("Simulador de Estacionamento");
         pack();
         ajustarTamanhoExato(940, 500);
         setVisible(true);
@@ -151,5 +163,9 @@ public class JanelaSimulacao extends JFrame {
             }
         }
     }
-
+    public void atualizarFaturamento(Double valor) {
+      faturamentoLabel.setText(String.format("Faturamento: R$ %.2f", valor));
+  }
+  
 }
+

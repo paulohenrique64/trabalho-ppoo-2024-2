@@ -24,4 +24,10 @@ public class Carro extends Veiculo {
     public Localizacao espacoOcupado() {
         return new Localizacao(5, 4);
     }
+
+    @Override
+    public Integer getValorEstacionamento() {
+        return 10;
+    }
+
 }
