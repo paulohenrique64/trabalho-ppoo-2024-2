@@ -15,7 +15,8 @@ import veiculos.Veiculo;
 public class Estacionamento {
     private static int LARGURA_PADRAO_MAPA = 94;
     private static int ALTURA_PADRAO_MAPA = 50;
-    private Map<Veiculo, Integer> veiculosEstacionados;
+    private List<Veiculo> veiculosCirculando;
+    private Map<Veiculo, Integer> veiculosEstacionados; // map veiculo para vaga que ele ocupa
     private List<Integer> vagasDisponiveis; // 0 a 19 -> vagas de carros | 20 a 31 -> vagas de moto 
     private Atendimento atendimento;
     
@@ -23,10 +24,19 @@ public class Estacionamento {
         veiculosEstacionados = new LinkedHashMap<>();
         vagasDisponiveis = new ArrayList<>();
         atendimento = new Atendimento();
+        veiculosCirculando = new ArrayList<>();
 
         for (int i = 0; i < 32; i++) {
             vagasDisponiveis.add(i);
         }
+    }
+
+    public void adicionarVeiculoCirculando(Veiculo v) {
+        veiculosCirculando.add(v);
+    }
+
+    public boolean removerVeiculoCirculando(Veiculo v) {
+        return veiculosCirculando.remove(v);
     }
 
     public boolean existeVagaDisponivel() {
@@ -76,12 +86,21 @@ public class Estacionamento {
     public List<Veiculo> getVeiculoNaPosicao(int x, int y) {
         List<Veiculo> veiculosNaPosicao = new ArrayList<>();
 
-        for (Veiculo v : veiculosEstacionados.keySet()) {
+        for (Veiculo v : veiculosCirculando) {
             if (v.getLocalizacaoAtual().getX() == y && v.getLocalizacaoAtual().getY() == x)
                 veiculosNaPosicao.add(v);
         }
 
         return veiculosNaPosicao;
+    }
+
+    public boolean existeVeiculoNaPosicao(int x, int y) {
+        for (Veiculo v : veiculosCirculando) {
+            if (v.getLocalizacaoAtual().getX() == y && v.getLocalizacaoAtual().getY() == x)
+                return true;
+        }
+
+        return false;
     }
 
     public int getQuantidadeVeiculosEstacionados() {

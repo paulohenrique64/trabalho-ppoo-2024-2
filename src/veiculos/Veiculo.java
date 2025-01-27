@@ -1,6 +1,9 @@
 package veiculos;
 
 import java.awt.Image;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Queue;
 
 import javax.swing.ImageIcon;
@@ -140,4 +143,21 @@ public abstract class Veiculo {
 
         return "nenhum"; 
     }
+
+    public List<Localizacao> getTrechoAFrente() {
+        List<Localizacao> pedacoDoCaminhoAFrente = new ArrayList<>();
+        Iterator<Localizacao> iterator = caminho.iterator();
+        int cont = 0;
+        
+        while (iterator.hasNext() && cont < 10) {
+            pedacoDoCaminhoAFrente.add(iterator.next());
+            cont++;
+        }
+
+        return pedacoDoCaminhoAFrente;
+    }
+
+    public void setCaminho(Queue<Localizacao> caminho) {
+        this.caminho = caminho;
+    } 
 }
