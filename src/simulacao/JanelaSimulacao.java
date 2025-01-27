@@ -1,6 +1,9 @@
 package simulacao;
 
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
 import mapa.Estacionamento;
@@ -15,28 +18,13 @@ public class JanelaSimulacao extends JFrame {
     private Estacionamento estacionamento;
     private VisaoEstacionamento visaoEstacionamento;
     private JLabel faturamentoLabel;
+    private Simulacao simulacao;
 
     public JanelaSimulacao(Estacionamento estacionamento, Simulacao simulacao) {
         this.estacionamento = estacionamento;
+        this.simulacao = simulacao;
         visaoEstacionamento = new VisaoEstacionamento(estacionamento.getLargura(), estacionamento.getAltura());
-
-        faturamentoLabel = new JLabel("Faturamento: R$ 0.00");
-        faturamentoLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        faturamentoLabel.setForeground(Color.BLACK);
-
-        JPanel topPanel = new JPanel();
-        topPanel.add(faturamentoLabel);
-
-        // Add components
-        setLayout(new BorderLayout());
-        add(topPanel, BorderLayout.NORTH);
-        add(visaoEstacionamento, BorderLayout.CENTER);
-
-        setTitle("Simulador de Estacionamento");
-        pack();
-        ajustarTamanhoExato(940, 500);
-        setVisible(true);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        criarInterface();
     }
 
     private void ajustarTamanhoExato(int largura, int altura) {
@@ -149,4 +137,68 @@ public class JanelaSimulacao extends JFrame {
         faturamentoLabel.setText(String.format("Faturamento: R$ %.2f", valor));
     }
 
+    private void criarInterface() {
+        faturamentoLabel = new JLabel("Faturamento: R$ 0.00");
+        faturamentoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        faturamentoLabel.setForeground(Color.BLACK);
+
+        JPanel topPanel = new JPanel();
+        topPanel.add(faturamentoLabel);
+
+        Button botaoAumentarVelocidadeSimulacao = new Button("Aumentar velocidade simulacao");
+        botaoAumentarVelocidadeSimulacao.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                simulacao.aumentarVelocidadeSimulacao();
+            }
+    
+        });
+
+        Button botaoDiminuirVelocidadeSimulacao = new Button("Diminuir velocidade simulacao");
+        botaoDiminuirVelocidadeSimulacao.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                simulacao.diminuirVelocidadeSimulacao();
+            }
+    
+        });
+
+        Button botaoAumentarFluxoVeiculos = new Button("Aumentar fluxo veiculos");
+        botaoAumentarFluxoVeiculos.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                simulacao.aumentarFluxoVeiculos();
+            }
+    
+        });
+
+        Button botaoDiminuirFluxoVeiculos = new Button("Diminuir fluxo veiculos");
+        botaoDiminuirFluxoVeiculos.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                simulacao.diminuirFluxoVeiculos();
+            }
+    
+        });
+
+        topPanel.add(botaoAumentarVelocidadeSimulacao);
+        topPanel.add(botaoDiminuirVelocidadeSimulacao);
+        topPanel.add(botaoDiminuirFluxoVeiculos);
+        topPanel.add(botaoAumentarFluxoVeiculos);
+
+        // Add components
+        setLayout(new BorderLayout());
+        add(topPanel, BorderLayout.NORTH);
+        add(visaoEstacionamento, BorderLayout.CENTER);
+
+        setTitle("Simulador de Estacionamento");
+        pack();
+        ajustarTamanhoExato(940, 500);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
 }

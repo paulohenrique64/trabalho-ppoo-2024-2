@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 
@@ -149,7 +150,7 @@ public abstract class Veiculo {
         Iterator<Localizacao> iterator = caminho.iterator();
         int cont = 0;
         
-        while (iterator.hasNext() && cont < 10) {
+        while (iterator.hasNext() && cont < 8) {
             pedacoDoCaminhoAFrente.add(iterator.next());
             cont++;
         }

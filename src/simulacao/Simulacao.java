@@ -26,10 +26,41 @@ import veiculos.Veiculo;
 public class Simulacao {
     private JanelaSimulacao janelaSimulacao;
     private Estacionamento estacionamento;
+    private int velocidadeSimulacao ;
+    private int fluxoVeiculos;
 
     public Simulacao() {
         estacionamento = new Estacionamento();
         janelaSimulacao = new JanelaSimulacao(estacionamento, this);
+        velocidadeSimulacao = 70;
+        fluxoVeiculos = 7;
+    }
+
+    public void aumentarVelocidadeSimulacao() {
+        if (velocidadeSimulacao > 5) {
+            velocidadeSimulacao -= 0.20 * velocidadeSimulacao;
+            System.out.println("Velocidade da simulacao -> " + velocidadeSimulacao);
+        }
+            
+    }
+
+    public void diminuirVelocidadeSimulacao() {
+        velocidadeSimulacao += 5;
+        System.out.println("Velocidade da simulacao -> " + velocidadeSimulacao);
+    }
+
+    public void aumentarFluxoVeiculos() {
+        if (fluxoVeiculos < 7) {
+            fluxoVeiculos += 1;
+            System.out.println("Fluxo de veiculos -> " + fluxoVeiculos);
+        }   
+    }
+
+    public void diminuirFluxoVeiculos() {
+        if (fluxoVeiculos > 1) {
+            fluxoVeiculos -= 1;
+            System.out.println("Fluxo de veiculos -> " + fluxoVeiculos);
+        }     
     }
 
     // este metodo, tem o papel de ser a ponte de comunicacao entre as classes Estacionamento e JanelaSimulacao
@@ -46,8 +77,8 @@ public class Simulacao {
         Random random = new Random();
         
         while (true) {
-            // podem existir no maximo 10 veiculos do lado de fora do estacionamento
-            while (veiculosFora.size() < 10) {
+            // spawnandos os veiculos no lado de fora do estacionamento
+            while (veiculosFora.size() < fluxoVeiculos) {
                 Veiculo veiculo = null;
                 String placa = String.valueOf(random.nextInt(3000, 10000));
 
@@ -129,7 +160,7 @@ public class Simulacao {
                     //
                     // logo, mesmo que o veiculo chegue a vaga, se o horario atual ainda nao eh maior
                     // que o horario definido aqui, o veiculo nao pode sair (desestacionar)
-                    veiculosDentro.put(veiculo, Instant.now().plusSeconds(random.nextInt(25, 40)));
+                    veiculosDentro.put(veiculo, Instant.now().plusSeconds(velocidadeSimulacao / 2));
                     estacionamento.estacionarVeiculo(veiculo, vagaDisponivel);
                     veiculosFora.remove(veiculo);
                 }
@@ -144,7 +175,7 @@ public class Simulacao {
 
                     veiculo.setCaminho(carregarCaminho("data/vaga-estacionamento-" + vagaDisponivel + "-caminho.txt"));
                     
-                    veiculosDentro.put(veiculo, Instant.now().plusSeconds(random.nextInt(2, 10)));
+                    veiculosDentro.put(veiculo, Instant.now().plusSeconds(velocidadeSimulacao / 5));
                     estacionamento.estacionarVeiculo(veiculo, vagaDisponivel);
                     veiculosFora.remove(veiculo);
                 }
@@ -199,7 +230,7 @@ public class Simulacao {
             // tempo entre cada atualizacao da imagem
             // 60 -> intervalo de 60 milisegundos entre cada atualizacao da imagem
             try {
-                Thread.sleep(60);
+                Thread.sleep(velocidadeSimulacao);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
