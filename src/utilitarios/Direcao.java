@@ -1,4 +1,4 @@
-package util;
+package utilitarios;
 
 public enum Direcao {
     DIREITA,

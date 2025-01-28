@@ -3,8 +3,8 @@ package mapa;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.Localizacao;
-import util.StatusGPSVeiculo;
+import utilitarios.Localizacao;
+import utilitarios.StatusGPSVeiculo;
 import veiculos.Veiculo;
 
 public class Mapa {
@@ -65,7 +65,7 @@ public class Mapa {
               
                 if (vaga != -1 && estacionamento.estacionarVeiculo(v, vaga, tempoVeiculoVaga)) {
                     v.setStatusGPSVeiculo(StatusGPSVeiculo.INDO_ESTACIONAR);
-                    v.setCaminho(Localizacao.carregarCaminho("data/vaga-estacionamento-" + vaga + "-caminho.txt"));
+                    v.setCaminho(Localizacao.carregarCaminho("data/caminhos/caminhos-estacionamento-para-vaga/vaga-" + vaga + ".txt"));
                 }
             }
 
@@ -75,11 +75,19 @@ public class Mapa {
             // que pode falhar, visto que o veiculo so pode ser
             // desestacionado quando o horario de desestacionamento chegar
             if (v.getProximaLocalizacao() == null && v.getStatusGPSVeiculo() == StatusGPSVeiculo.INDO_ESTACIONAR) {
-                if (estacionamento.desestacionarVeiculo(v)) {
+                int vaga = estacionamento.getVagaVeiculoEstacionado(v);
+
+                if (vaga != -1 && estacionamento.desestacionarVeiculo(v)) {
                     // se o veiculo conseguir desestacionar
                     // ele eh removido do sistema
-                    veiculosParaRemover.add(v); 
+                    // veiculosParaRemover.add(v); 
+                    v.setCaminho(Localizacao.carregarCaminho("data/caminhos/caminhos-estacionamento-para-saida/saida-" + vaga + ".txt"));
+                    v.setStatusGPSVeiculo(StatusGPSVeiculo.INDO_EMBORA_DO_ESTACIONAMENTO);
                 }
+            }
+
+            if (v.getProximaLocalizacao() == null && v.getStatusGPSVeiculo() == StatusGPSVeiculo.INDO_EMBORA_DO_ESTACIONAMENTO) {
+                veiculosParaRemover.add(v); 
             }
         }
 

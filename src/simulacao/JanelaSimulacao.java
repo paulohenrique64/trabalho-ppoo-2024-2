@@ -5,7 +5,7 @@ import java.awt.*;
 import javax.swing.*;
 
 import mapa.Mapa;
-import util.Localizacao;
+import utilitarios.Localizacao;
 import veiculos.Veiculo;
 
 /**
@@ -50,6 +50,33 @@ public class JanelaSimulacao extends JFrame {
         visaoEstacionamento.repaint();
     }
 
+    public void atualizarFaturamento(Double valor) {
+        faturamentoLabel.setText(String.format("Faturamento: R$ %.2f", valor));
+    }
+
+    private void criarInterface() {
+        faturamentoLabel = new JLabel("Faturamento: R$ 0.00");
+        faturamentoLabel.setFont(new Font("Arial", Font.BOLD, 14));
+        faturamentoLabel.setForeground(Color.BLACK);
+
+        JPanel topPanel = new JPanel();
+        topPanel.add(faturamentoLabel);
+
+        // Add components
+        setLayout(new BorderLayout());
+        add(topPanel, BorderLayout.NORTH);
+        add(visaoEstacionamento, BorderLayout.CENTER);
+
+        setTitle("Simulador de Estacionamento");
+        pack();
+        ajustarTamanhoExato(940, 500);
+        setVisible(true);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+
+
+
+
     // Fornece uma visualizacao grafica do mapa. Esta eh
     // uma classe interna que define os componentes da GUI.
     // Ela contém alguns detalhes mais avancados sobre GUI
@@ -74,7 +101,7 @@ public class JanelaSimulacao extends JFrame {
             ;
 
             // Carregar a imagem de fundo
-            imagemFundo = new ImageIcon("src/imagens/estacionamento/estacionamento.png").getImage();
+            imagemFundo = new ImageIcon("data/imagens/estacionamento/estacionamento.png").getImage();
         }
 
         // Informa para o gerenciador GUI o tamanho.
@@ -127,29 +154,5 @@ public class JanelaSimulacao extends JFrame {
                 g.drawImage(imagemEstacionamento, 0, 0, null);
             }
         }
-    }
-
-    public void atualizarFaturamento(Double valor) {
-        faturamentoLabel.setText(String.format("Faturamento: R$ %.2f", valor));
-    }
-
-    private void criarInterface() {
-        faturamentoLabel = new JLabel("Faturamento: R$ 0.00");
-        faturamentoLabel.setFont(new Font("Arial", Font.BOLD, 14));
-        faturamentoLabel.setForeground(Color.BLACK);
-
-        JPanel topPanel = new JPanel();
-        topPanel.add(faturamentoLabel);
-
-        // Add components
-        setLayout(new BorderLayout());
-        add(topPanel, BorderLayout.NORTH);
-        add(visaoEstacionamento, BorderLayout.CENTER);
-
-        setTitle("Simulador de Estacionamento");
-        pack();
-        ajustarTamanhoExato(940, 500);
-        setVisible(true);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 }

@@ -1,10 +1,8 @@
-package imagens;
+package utilitarios;
 
 import java.awt.Image;
 import java.util.LinkedHashMap;
 import java.util.Map;
-
-import util.Direcao;
 
 public abstract class ImagensVeiculo {
     private Map<Direcao, Image> imagens;

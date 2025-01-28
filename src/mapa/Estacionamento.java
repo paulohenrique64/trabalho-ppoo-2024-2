@@ -37,7 +37,7 @@ public class Estacionamento {
         if (vagasDisponiveis.size() == 0) 
             return -1;
 
-        return vagasDisponiveis.getLast();
+        return vagasDisponiveis.get(vagasDisponiveis.size() - 1);
     }
 
     public int getVagaDisponivel(int rangeInicial, int rangeFinal) {
@@ -53,7 +53,7 @@ public class Estacionamento {
         if (vagasPossiveis.size() == 0)
             return -1;
 
-        return vagasPossiveis.get(random.nextInt(0, vagasPossiveis.size()));
+        return vagasPossiveis.get(random.nextInt(vagasPossiveis.size()));
     }
 
     public boolean estacionarVeiculo(Veiculo v, int vaga, int tempoDeEstacionamento) {
@@ -69,9 +69,18 @@ public class Estacionamento {
         return true;
     }
 
+    public int getVagaVeiculoEstacionado(Veiculo v) {
+        if (!veiculosVaga.containsKey(v))
+            return -1;
+
+        return veiculosVaga.get(v);
+    }
+
     public boolean desestacionarVeiculo(Veiculo v) {
         if (!veiculosVaga.containsKey(v))
             return false;
+
+        // int vaga = veiculosVaga.get(v);
 
         if (veiculosTempo.get(v).compareTo(Instant.now()) < 0) {
             vagasDisponiveis.add(veiculosVaga.get(v));

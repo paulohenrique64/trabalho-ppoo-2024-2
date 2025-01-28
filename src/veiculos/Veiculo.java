@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
 
-import imagens.ImagensVeiculo;
-import util.Localizacao;
-import util.StatusGPSVeiculo;
-import util.Direcao;
+import utilitarios.Direcao;
+import utilitarios.ImagensVeiculo;
+import utilitarios.Localizacao;
+import utilitarios.StatusGPSVeiculo;
 
 /**
  * Representa a entidate Veículo
@@ -104,7 +104,7 @@ public abstract class Veiculo {
         Iterator<Localizacao> iterator = caminho.iterator();
         int cont = 0;
         
-        while (iterator.hasNext() && cont < 8) {
+        while (iterator.hasNext() && cont < 10) {
             pedacoDoCaminhoAFrente.add(iterator.next());
             cont++;
         }

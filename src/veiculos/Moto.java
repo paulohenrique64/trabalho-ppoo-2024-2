@@ -2,8 +2,8 @@ package veiculos;
 
 import java.util.Queue;
 
-import imagens.ImagensVeiculo;
-import util.Localizacao;
+import utilitarios.ImagensVeiculo;
+import utilitarios.Localizacao;
 
 /**
  * Representa a entidate Moto

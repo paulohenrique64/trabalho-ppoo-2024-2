@@ -3,7 +3,7 @@ package mapa;
 import java.util.ArrayList;
 import java.util.List;
 
-import util.Ticket;
+import utilitarios.Ticket;
 import veiculos.Veiculo;
 
 /**

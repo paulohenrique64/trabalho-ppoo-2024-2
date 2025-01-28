@@ -3,10 +3,10 @@ package simulacao;
 import java.util.Queue;
 import java.util.Random;
 
-import imagens.ImagensCarroAzul;
-import imagens.ImagensMotoVermelha;
 import mapa.Mapa;
-import util.Localizacao;
+import utilitarios.ImagensCarroAzul;
+import utilitarios.ImagensMotoVermelha;
+import utilitarios.Localizacao;
 import veiculos.Carro;
 import veiculos.Moto;
 import veiculos.Veiculo;
@@ -46,16 +46,16 @@ public class Simulacao {
             // tem como destino e status atual a entrada do estacionamento
             while (mapa.getQuantidadeVeiculosIndoParaEntradaEstacionamento() < fluxoVeiculos) {
                 Veiculo veiculo = null;
-                String placa = String.valueOf(random.nextInt(3000, 10000));
-                Queue<Localizacao> caminho = Localizacao.carregarCaminho("data/caminho-ate-entrada.txt");
+                String placa = String.valueOf(random.nextInt(10000));
+                Queue<Localizacao> caminho = Localizacao.carregarCaminho("data/caminhos/caminho-ate-entrada.txt");
                 Localizacao locI = new Localizacao(100, 100); // localizacao inicial do veiculo no mapa
                 
                 // chances de 7 em 10 de spawnar um carro
-                if (random.nextInt(1, 10) > 3) {
-                    int cavalosDePotencia = random.nextInt(50, 170);
+                if (random.nextInt(10) > 2) {
+                    int cavalosDePotencia = random.nextInt(170) + 50;
                     veiculo = new Carro(placa, locI,caminho,4, cavalosDePotencia, new ImagensCarroAzul()); 
                 } else {
-                    int cilindradas = random.nextInt(50, 200);
+                    int cilindradas = random.nextInt(200) + 50;
                     veiculo = new Moto(placa, locI, caminho, 2, cilindradas, new ImagensMotoVermelha());
                 }
 

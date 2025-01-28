@@ -8,9 +8,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-        int velocidadeSimulacao = 30; // por padrao 50
+        int velocidadeSimulacao = 20; // por padrao 50
 
-        int fluxoVeiculos = 4; // por padrao 4
+        int fluxoVeiculos = 2; // por padrao 2
 
         Simulacao sim = new Simulacao(velocidadeSimulacao, fluxoVeiculos);
         sim.iniciarSimulacao();

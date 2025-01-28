@@ -2,3 +2,4 @@ bin
 .vscode
 run.sh
 doc
+run*
