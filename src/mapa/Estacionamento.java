@@ -1,42 +1,37 @@
 package mapa;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import util.Localizacao;
 import veiculos.Veiculo;
+
+// Veiculo10 -> 19
+// Veiculo10 -> 10:50
 
 /**
  * Representa a entidate Estacionamento onde ocorrerá toda a lógica/fluxo de veículos entrando e saindo
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
 public class Estacionamento {
-    private static int LARGURA_PADRAO_MAPA = 94;
-    private static int ALTURA_PADRAO_MAPA = 50;
-    private List<Veiculo> veiculosCirculando;
-    private Map<Veiculo, Integer> veiculosEstacionados; // map veiculo para vaga que ele ocupa
+    private Map<Veiculo, Integer> veiculosVaga; // map veiculo para vaga que ele ocupa
+    private Map<Veiculo, Instant> veiculosTempo; // map veiculo para o horario que o veiculo podera sair da vaga
     private List<Integer> vagasDisponiveis; // 0 a 19 -> vagas de carros | 20 a 31 -> vagas de moto 
     private Atendimento atendimento;
     
     public Estacionamento() {
-        veiculosEstacionados = new LinkedHashMap<>();
+        veiculosVaga = new LinkedHashMap<>();
+        veiculosTempo = new LinkedHashMap<>();
         vagasDisponiveis = new ArrayList<>();
         atendimento = new Atendimento();
-        veiculosCirculando = new ArrayList<>();
 
         for (int i = 0; i < 32; i++) {
             vagasDisponiveis.add(i);
         }
-    }
-
-    public void adicionarVeiculoCirculando(Veiculo v) {
-        veiculosCirculando.add(v);
-    }
-
-    public boolean removerVeiculoCirculando(Veiculo v) {
-        return veiculosCirculando.remove(v);
     }
 
     public boolean existeVagaDisponivel() {
@@ -66,37 +61,46 @@ public class Estacionamento {
         return vagasPossiveis.get(random.nextInt(0, vagasPossiveis.size()));
     }
 
-    public void estacionarVeiculo(Veiculo v, int numeroVaga) {
-        vagasDisponiveis.remove(Integer.valueOf(numeroVaga));
-        veiculosEstacionados.put(v, numeroVaga);
-        atendimento.gerarNovoTicket(v);
+    public boolean estacionarVeiculo(Veiculo v, int tempoDeEstacionamento) {
+        int vagaDisponivel;
+
+        if (v.getQuantidadeRodas() >= 4) {
+            vagaDisponivel = getVagaDisponivel(0, 19);
+        } else {
+            vagaDisponivel = getVagaDisponivel(20, 31);
+        }
+
+        if (vagaDisponivel != -1) {
+            v.setCaminho(Localizacao.carregarCaminho("data/vaga-estacionamento-" + vagaDisponivel + "-caminho.txt"));
+            vagasDisponiveis.remove(Integer.valueOf(vagaDisponivel));
+            veiculosVaga.put(v, vagaDisponivel);
+            atendimento.gerarNovoTicket(v);
+
+            veiculosTempo.put(v, Instant.now().plusSeconds(tempoDeEstacionamento));
+            return true;
+        }
+
+        return false;
     }
 
     public boolean desestacionarVeiculo(Veiculo v) {
-        if (!veiculosEstacionados.containsKey(v))
+        if (!veiculosVaga.containsKey(v))
             return false;
 
-        vagasDisponiveis.add(veiculosEstacionados.get(v));
-        veiculosEstacionados.remove(v);
-        atendimento.finalizarTicket(v);
-
-        return true;
-    }
-
-    public List<Veiculo> getVeiculoNaPosicao(int x, int y) {
-        List<Veiculo> veiculosNaPosicao = new ArrayList<>();
-
-        for (Veiculo v : veiculosCirculando) {
-            if (v.getLocalizacaoAtual().getX() == y && v.getLocalizacaoAtual().getY() == x)
-                veiculosNaPosicao.add(v);
+        if (veiculosTempo.get(v).compareTo(Instant.now()) < 0) {
+            vagasDisponiveis.add(veiculosVaga.get(v));
+            veiculosVaga.remove(v);
+            veiculosTempo.remove(v);
+            atendimento.finalizarTicket(v);
+            return true;
         }
 
-        return veiculosNaPosicao;
+        return false;
     }
 
-    public boolean existeVeiculoNaPosicao(int x, int y) {
-        for (Veiculo v : veiculosCirculando) {
-            if (v.getLocalizacaoAtual().getX() == y && v.getLocalizacaoAtual().getY() == x)
+    public boolean possuiVeiculo(Veiculo veiculo) {
+        for (Veiculo v : veiculosVaga.keySet()) {
+            if (v.getPlaca().equals(veiculo.getPlaca()))
                 return true;
         }
 
@@ -104,15 +108,7 @@ public class Estacionamento {
     }
 
     public int getQuantidadeVeiculosEstacionados() {
-        return veiculosEstacionados.size();
-    }
-
-    public int getAltura() {
-        return ALTURA_PADRAO_MAPA;
-    }
-
-    public int getLargura() {
-        return LARGURA_PADRAO_MAPA;
+        return veiculosVaga.size();
     }
 
     public Double getFaturamento() {
@@ -121,5 +117,9 @@ public class Estacionamento {
 
     public Atendimento getAtendimento() {
         return atendimento;
+    }
+
+    public int teste() {
+        return veiculosVaga.size();
     }
 }

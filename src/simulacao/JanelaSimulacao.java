@@ -1,12 +1,10 @@
 package simulacao;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import javax.swing.*;
 
-import mapa.Estacionamento;
+import mapa.Mapa;
 import util.Localizacao;
 import veiculos.Veiculo;
 
@@ -15,15 +13,13 @@ import veiculos.Veiculo;
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
 public class JanelaSimulacao extends JFrame {
-    private Estacionamento estacionamento;
+    private Mapa mapa;
     private VisaoEstacionamento visaoEstacionamento;
     private JLabel faturamentoLabel;
-    private Simulacao simulacao;
 
-    public JanelaSimulacao(Estacionamento estacionamento, Simulacao simulacao) {
-        this.estacionamento = estacionamento;
-        this.simulacao = simulacao;
-        visaoEstacionamento = new VisaoEstacionamento(estacionamento.getLargura(), estacionamento.getAltura());
+    public JanelaSimulacao(Mapa mapa) {
+        this.mapa = mapa;
+        visaoEstacionamento = new VisaoEstacionamento(mapa.getLargura(), mapa.getAltura());
         criarInterface();
     }
 
@@ -38,9 +34,9 @@ public class JanelaSimulacao extends JFrame {
     public void atualizarJanelaSimulacao() {
         visaoEstacionamento.preparePaint();
 
-        for (int i = 0; i < estacionamento.getAltura(); i++) {
-            for (int j = 0; j < estacionamento.getLargura(); j++) {
-                java.util.List<Veiculo> veiculosNaPosicao = estacionamento.getVeiculoNaPosicao(i, j);
+        for (int i = 0; i < mapa.getAltura(); i++) {
+            for (int j = 0; j < mapa.getLargura(); j++) {
+                java.util.List<Veiculo> veiculosNaPosicao = mapa.getVeiculoNaPosicao(i, j);
 
                 for (Veiculo veiculo : veiculosNaPosicao) {
                     Localizacao localizacao = veiculo.getLocalizacaoAtual();
@@ -78,7 +74,7 @@ public class JanelaSimulacao extends JFrame {
             ;
 
             // Carregar a imagem de fundo
-            imagemFundo = new ImageIcon("src/imagens/estacionamento.png").getImage();
+            imagemFundo = new ImageIcon("src/imagens/estacionamento/estacionamento.png").getImage();
         }
 
         // Informa para o gerenciador GUI o tamanho.
@@ -144,51 +140,6 @@ public class JanelaSimulacao extends JFrame {
 
         JPanel topPanel = new JPanel();
         topPanel.add(faturamentoLabel);
-
-        Button botaoAumentarVelocidadeSimulacao = new Button("Aumentar velocidade simulacao");
-        botaoAumentarVelocidadeSimulacao.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                simulacao.aumentarVelocidadeSimulacao();
-            }
-    
-        });
-
-        Button botaoDiminuirVelocidadeSimulacao = new Button("Diminuir velocidade simulacao");
-        botaoDiminuirVelocidadeSimulacao.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                simulacao.diminuirVelocidadeSimulacao();
-            }
-    
-        });
-
-        Button botaoAumentarFluxoVeiculos = new Button("Aumentar fluxo veiculos");
-        botaoAumentarFluxoVeiculos.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                simulacao.aumentarFluxoVeiculos();
-            }
-    
-        });
-
-        Button botaoDiminuirFluxoVeiculos = new Button("Diminuir fluxo veiculos");
-        botaoDiminuirFluxoVeiculos.addActionListener(new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                simulacao.diminuirFluxoVeiculos();
-            }
-    
-        });
-
-        topPanel.add(botaoAumentarVelocidadeSimulacao);
-        topPanel.add(botaoDiminuirVelocidadeSimulacao);
-        topPanel.add(botaoDiminuirFluxoVeiculos);
-        topPanel.add(botaoAumentarFluxoVeiculos);
 
         // Add components
         setLayout(new BorderLayout());

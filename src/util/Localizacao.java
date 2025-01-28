@@ -1,4 +1,9 @@
 package util;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.Random;
 
 /**
@@ -81,6 +86,31 @@ public class Localizacao {
     {
         return "(" + x + ", " + y + ")";
     }
-    
+
+    // carrega as coordenadas do arquivo recebido como parametro em uma fila (caminho a ser percorrido pelo veiculo)
+    public static Queue<Localizacao> carregarCaminho(String caminhoArquivo) {
+        Queue<Localizacao> caminho = new LinkedList<>();
+
+        try (BufferedReader leitor = new BufferedReader(new FileReader(caminhoArquivo))) {
+            String linha;
+            String[] coordenadas;
+
+            // lendo o restante do caminho ate a vaga de estacionamento
+            while ((linha = leitor.readLine()) != null) {
+                coordenadas = linha.split(" ");
+
+                if (coordenadas.length == 2) {
+                    coordenadas = coordenadas[1].split("\"")[1].split(";");
+                    int x = Integer.parseInt(coordenadas[0]);
+                    int y = Integer.parseInt(coordenadas[1]);
+                    caminho.add(new Localizacao(y, x));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return caminho;
+    }
     
 }

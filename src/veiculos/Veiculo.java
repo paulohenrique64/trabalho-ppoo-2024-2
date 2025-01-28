@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Queue;
-import java.util.Random;
 
-import javax.swing.ImageIcon;
-
+import imagens.ImagensVeiculo;
 import util.Localizacao;
+import util.StatusGPSVeiculo;
+import util.Direcao;
 
 /**
  * Representa a entidate Veículo
@@ -19,19 +19,24 @@ import util.Localizacao;
 public abstract class Veiculo {
     private Localizacao localizacaoAtual;
     protected Queue<Localizacao> caminho;
-    private Image imagem;
+    private Image imagemAtual;
+    private ImagensVeiculo imagensVeiculo;
     private String placa;
-    private String cor;
+    private int quantidadeRodas; 
+    private StatusGPSVeiculo status;
 
-    public Veiculo(String placa, Localizacao localizacao, Queue<Localizacao> caminho) {
+    public Veiculo(String placa, int quantidadeRodas, Localizacao localizacao, Queue<Localizacao> caminho, ImagensVeiculo imagensVeiculo) {
+        this.placa = placa;
+        this.quantidadeRodas = quantidadeRodas;
         this.localizacaoAtual = localizacao;
         this.caminho = caminho;
-        this.placa = placa;
+        this.imagensVeiculo = imagensVeiculo;
+        this.status = StatusGPSVeiculo.INDO_PARA_ENTRADA_ESTACIONAMENTO;
+        this.imagemAtual = imagensVeiculo.getImagem(Direcao.CIMA); // imagem default
+    }
 
-        // adicionando imagem default
-        String tipoVeiculoInstanciado = this.getClass().getSimpleName();
-        String enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-cima.png";
-        this.imagem = new ImageIcon(enderecoImagem.toLowerCase()).getImage();
+    public int getQuantidadeRodas() {
+        return quantidadeRodas;
     }
 
     public Localizacao getLocalizacaoAtual() {
@@ -39,7 +44,7 @@ public abstract class Veiculo {
     }
 
     public Image getImagem() {
-        return imagem;
+        return imagemAtual;
     }
 
     public void setLocalizacaoAtual(Localizacao localizacaoAtual) {
@@ -50,33 +55,19 @@ public abstract class Veiculo {
         return placa;
     }
 
-    public String getCor() {
-        return cor;
-    }
-
     public abstract Localizacao getEspacoOcupado();
 
-    @Override
-    public String toString() {
-        return "Veiculo [localizacaoAtual=" + localizacaoAtual + ", placa=" + placa + ", cor=" + cor + "]";
+    public Double calcularTaxaDeDanificacao() {
+        return 0.7;
     }
 
     public Localizacao getProximaLocalizacao() {
         return caminho.peek();
     }
 
-    public void setImagem(Image imagem) {
-        this.imagem = imagem;
-    }
-
     public boolean executarAcao() {
-        // se o veiculo ja chegou ao seu destino
-        if (caminho.size() == 0)
+        if (caminho.size() == 0) // se o veiculo ja chegou ao seu destino
             return false;
-
-        // variaveis auxiliares para atualizar a imagem do veiculo com base na direcao que esta indo
-        String tipoVeiculoInstanciado = this.getClass().getSimpleName();
-        String enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-cima.png"; // image default
 
         Localizacao localizacaoAnterior = getLocalizacaoAtual();
         Localizacao proximaLocalizacao = caminho.poll();
@@ -84,65 +75,28 @@ public abstract class Veiculo {
         // atualizar localizacao atual
         setLocalizacaoAtual(proximaLocalizacao);
 
-        String direcao = determinarDirecao(localizacaoAnterior, proximaLocalizacao);
-
-        switch (direcao) {
-            case "direita":
-                enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-direita.png";
-                break;
-
-            case "esquerda":
-                enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-esquerda.png";
-                break;
-
-            case "cima":
-                enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-cima.png";
-                break;
-
-            case "baixo":
-                enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-baixo.png";
-                break;
-
-            case "diagonal-esquerda-cima":
-                enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-diagonal-esquerda-cima.png";
-                break;
-
-            case "diagonal-esquerda-baixo":
-                enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-diagonal-esquerda-baixo.png";
-                break;
-
-            case "diagonal-direita-cima":
-                enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-diagonal-direita-cima.png";
-                break;
-
-            case "diagonal-direita-baixo":
-                enderecoImagem = "src/imagens/" + tipoVeiculoInstanciado + "/" + tipoVeiculoInstanciado + "-diagonal-direita-baixo.png";
-                break;
-
-            default:
-                break;
-        }
-
-        setImagem(new ImageIcon(enderecoImagem.toLowerCase()).getImage());
+        // atualizar a imagem do veiculo
+        Direcao dir = determinarDirecao(localizacaoAnterior, proximaLocalizacao);
+        imagemAtual = imagensVeiculo.getImagem(dir);
 
         return true;
     }
 
-    protected static String determinarDirecao(Localizacao localizacaoAtual, Localizacao proximaLocalizacao) {
+    protected static Direcao determinarDirecao(Localizacao localizacaoAtual, Localizacao proximaLocalizacao) {
         int variacaoDeX = proximaLocalizacao.getX() - localizacaoAtual.getX();
         int variacaoDeY = proximaLocalizacao.getY() - localizacaoAtual.getY();
 
-        if (variacaoDeX < 0 && variacaoDeY == 0) return "esquerda";
-        if (variacaoDeX > 0 && variacaoDeY == 0) return "direita";
-        if (variacaoDeX == 0 && variacaoDeY < 0) return "cima";
-        if (variacaoDeX == 0 && variacaoDeY > 0) return "baixo";
+        if (variacaoDeX < 0 && variacaoDeY == 0) return Direcao.ESQUERDA;
+        if (variacaoDeX > 0 && variacaoDeY == 0) return Direcao.DIREITA;
+        if (variacaoDeX == 0 && variacaoDeY < 0) return Direcao.CIMA;
+        if (variacaoDeX == 0 && variacaoDeY > 0) return Direcao.BAIXO;
 
-        if (variacaoDeX < 0 && variacaoDeY < 0) return "diagonal-esquerda-cima";
-        if (variacaoDeX < 0 && variacaoDeY > 0) return "diagonal-esquerda-baixo";
-        if (variacaoDeX > 0 && variacaoDeY < 0) return "diagonal-direita-cima";
-        if (variacaoDeX > 0 && variacaoDeY > 0) return "diagonal-direita-baixo";
+        if (variacaoDeX < 0 && variacaoDeY < 0) return Direcao.DIAGONAL_ESQUERDA_CIMA;
+        if (variacaoDeX < 0 && variacaoDeY > 0) return Direcao.DIAGONAL_ESQUERDA_BAIXO;
+        if (variacaoDeX > 0 && variacaoDeY < 0) return Direcao.DIAGONAL_DIREITA_CIMA;
+        if (variacaoDeX > 0 && variacaoDeY > 0) return Direcao.DIAGONAL_DIREITA_BAIXO;
 
-        return "nenhum"; 
+        return Direcao.CIMA; // posicao default
     }
 
     public List<Localizacao> getTrechoAFrente() {
@@ -160,5 +114,17 @@ public abstract class Veiculo {
 
     public void setCaminho(Queue<Localizacao> caminho) {
         this.caminho = caminho;
+    }
+
+    public StatusGPSVeiculo getStatusGPSVeiculo() {
+        return status;
+    }
+
+    public void setStatusGPSVeiculo(StatusGPSVeiculo status) {
+        this.status = status;
     } 
+
+    public void setImagem(Direcao direcao) {
+        imagemAtual = imagensVeiculo.getImagem(direcao);
+    }
 }

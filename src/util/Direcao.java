@@ -1,0 +1,12 @@
+package util;
+
+public enum Direcao {
+    DIREITA,
+    ESQUERDA,
+    CIMA,
+    BAIXO,
+    DIAGONAL_DIREITA_CIMA,
+    DIAGONAL_DIREITA_BAIXO,
+    DIAGONAL_ESQUERDA_CIMA,
+    DIAGONAL_ESQUERDA_BAIXO
+}

@@ -19,7 +19,7 @@ public class Ticket {
     }
 
     public Double getCustoEstacionamento() {
-        return horaChegada.getSecond() / 7.0 * veiculo.getEspacoOcupado().getX();
+        return horaChegada.getSecond() / 7.0 * veiculo.getEspacoOcupado().getX() * veiculo.calcularTaxaDeDanificacao();
     }
 
     public String getPlacaVeiculo() {
