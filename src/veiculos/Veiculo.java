@@ -57,7 +57,7 @@ public abstract class Veiculo {
 
     public abstract Localizacao getEspacoOcupado();
 
-    public Double calcularTaxaDeDanificacao() {
+    public Double calcularTaxaDanificacaoTerreno() {
         return 0.7;
     }
 

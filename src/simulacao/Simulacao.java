@@ -1,5 +1,6 @@
 package simulacao;
 
+import java.util.Queue;
 import java.util.Random;
 
 import imagens.ImagensCarroAzul;
@@ -16,16 +17,16 @@ import veiculos.Veiculo;
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
 public class Simulacao {
-    private JanelaSimulacao janelaSimulacao;
-    private Mapa mapa;
     private int velocidadeSimulacao;
     private int fluxoVeiculos;
+    private Mapa mapa;
+    private JanelaSimulacao janelaSimulacao;
 
-    public Simulacao() {
-        this.mapa = new Mapa();
+    public Simulacao(int velocidadeSimulacao, int fluxoVeiculos) {
+        this.velocidadeSimulacao = velocidadeSimulacao;
+        this.fluxoVeiculos = fluxoVeiculos;
+        this.mapa = new Mapa(velocidadeSimulacao / 2);
         janelaSimulacao = new JanelaSimulacao(mapa);
-        velocidadeSimulacao = 20;
-        fluxoVeiculos = 7;
     }
 
     // este metodo, tem o papel de ser a ponte de comunicacao entre as classes Mapa e JanelaSimulacao
@@ -40,33 +41,26 @@ public class Simulacao {
         Random random = new Random();
         
         while (true) {
-            // spawnandos os veiculos no lado de fora do estacionamento
+            // spawnandos os veiculos no mapa
+            // cada veiculo recem spawnado, por padrao,
+            // tem como destino e status atual a entrada do estacionamento
             while (mapa.getQuantidadeVeiculosIndoParaEntradaEstacionamento() < fluxoVeiculos) {
                 Veiculo veiculo = null;
                 String placa = String.valueOf(random.nextInt(3000, 10000));
-
-                // as chances de "spawnar" um carro e uma moto sao iguais
-                if (random.nextBoolean()) {
-                    veiculo = new Carro(
-                                        placa, 
-                                        new Localizacao(100, 100), 
-                                        Localizacao.carregarCaminho("data/caminho-ate-entrada.txt"),  
-                                        4, 
-                                        random.nextInt(50, 170), 
-                                        new ImagensCarroAzul()
-                                    );
+                Queue<Localizacao> caminho = Localizacao.carregarCaminho("data/caminho-ate-entrada.txt");
+                Localizacao locI = new Localizacao(100, 100); // localizacao inicial do veiculo no mapa
+                
+                // chances de 7 em 10 de spawnar um carro
+                if (random.nextInt(1, 10) > 3) {
+                    int cavalosDePotencia = random.nextInt(50, 170);
+                    veiculo = new Carro(placa, locI,caminho,4, cavalosDePotencia, new ImagensCarroAzul()); 
                 } else {
-                    veiculo = new Moto(
-                                        placa, 
-                                        new Localizacao(100, 100), 
-                                        Localizacao.carregarCaminho("data/caminho-ate-entrada.txt"), 
-                                        2, 
-                                        random.nextInt(50, 200), 
-                                        new ImagensMotoVermelha()
-                                    );
+                    int cilindradas = random.nextInt(50, 200);
+                    veiculo = new Moto(placa, locI, caminho, 2, cilindradas, new ImagensMotoVermelha());
                 }
 
-                mapa.adicionarVeiculo(veiculo);
+                if (veiculo != null)
+                    mapa.adicionarVeiculo(veiculo);
             }
 
             mapa.executarUmPasso();
@@ -74,37 +68,11 @@ public class Simulacao {
             janelaSimulacao.atualizarJanelaSimulacao();
 
             // tempo entre cada atualizacao da imagem 60 -> intervalo de 60 milisegundos entre cada atualizacao da imagem
-            try {
-                Thread.sleep(velocidadeSimulacao);
+            try { 
+                Thread.sleep(velocidadeSimulacao); 
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    public void aumentarVelocidadeSimulacao() {
-        if (velocidadeSimulacao > 5) {
-            velocidadeSimulacao -= 0.20 * velocidadeSimulacao;
-            System.out.println("Velocidade da simulacao -> " + velocidadeSimulacao);
-        }   
-    }
-
-    public void diminuirVelocidadeSimulacao() {
-        velocidadeSimulacao += 5;
-        System.out.println("Velocidade da simulacao -> " + velocidadeSimulacao);
-    }
-
-    public void aumentarFluxoVeiculos() {
-        if (fluxoVeiculos < 7) {
-            fluxoVeiculos += 1;
-            System.out.println("Fluxo de veiculos -> " + fluxoVeiculos);
-        }   
-    }
-
-    public void diminuirFluxoVeiculos() {
-        if (fluxoVeiculos > 1) {
-            fluxoVeiculos -= 1;
-            System.out.println("Fluxo de veiculos -> " + fluxoVeiculos);
-        }     
     }
 }

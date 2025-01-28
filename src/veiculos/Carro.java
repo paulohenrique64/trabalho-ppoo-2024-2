@@ -4,7 +4,6 @@ import java.util.Queue;
 
 import imagens.ImagensVeiculo;
 import util.Localizacao;
-import util.StatusGPSVeiculo;
 
 /**
  * Representa a entidate Carro 
@@ -24,7 +23,7 @@ public class Carro extends Veiculo {
     }
 
     @Override
-    public Double calcularTaxaDeDanificacao() {
-        return super.calcularTaxaDeDanificacao() * (cavalosDePotencia / 100);
+    public Double calcularTaxaDanificacaoTerreno() {
+        return super.calcularTaxaDanificacaoTerreno() * (cavalosDePotencia / 100);
     }
 }

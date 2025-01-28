@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import util.Localizacao;
 import veiculos.Veiculo;
 
 // Veiculo10 -> 19
@@ -34,12 +33,8 @@ public class Estacionamento {
         }
     }
 
-    public boolean existeVagaDisponivel() {
-        return vagasDisponiveis.size() > 0;
-    }
-
     public int getVagaDisponivel() {
-        if (!existeVagaDisponivel()) 
+        if (vagasDisponiveis.size() == 0) 
             return -1;
 
         return vagasDisponiveis.getLast();
@@ -61,26 +56,17 @@ public class Estacionamento {
         return vagasPossiveis.get(random.nextInt(0, vagasPossiveis.size()));
     }
 
-    public boolean estacionarVeiculo(Veiculo v, int tempoDeEstacionamento) {
-        int vagaDisponivel;
-
-        if (v.getQuantidadeRodas() >= 4) {
-            vagaDisponivel = getVagaDisponivel(0, 19);
-        } else {
-            vagaDisponivel = getVagaDisponivel(20, 31);
+    public boolean estacionarVeiculo(Veiculo v, int vaga, int tempoDeEstacionamento) {
+        if (veiculosVaga.values().contains(vaga)) {
+            return false;
         }
 
-        if (vagaDisponivel != -1) {
-            v.setCaminho(Localizacao.carregarCaminho("data/vaga-estacionamento-" + vagaDisponivel + "-caminho.txt"));
-            vagasDisponiveis.remove(Integer.valueOf(vagaDisponivel));
-            veiculosVaga.put(v, vagaDisponivel);
-            atendimento.gerarNovoTicket(v);
+        vagasDisponiveis.remove(Integer.valueOf(vaga));
+        veiculosVaga.put(v, vaga);
+        atendimento.gerarNovoTicket(v);
+        veiculosTempo.put(v, Instant.now().plusSeconds(tempoDeEstacionamento));
 
-            veiculosTempo.put(v, Instant.now().plusSeconds(tempoDeEstacionamento));
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
     public boolean desestacionarVeiculo(Veiculo v) {
@@ -98,28 +84,7 @@ public class Estacionamento {
         return false;
     }
 
-    public boolean possuiVeiculo(Veiculo veiculo) {
-        for (Veiculo v : veiculosVaga.keySet()) {
-            if (v.getPlaca().equals(veiculo.getPlaca()))
-                return true;
-        }
-
-        return false;
-    }
-
-    public int getQuantidadeVeiculosEstacionados() {
-        return veiculosVaga.size();
-    }
-
     public Double getFaturamento() {
         return atendimento.getFaturamento();
-    }
-
-    public Atendimento getAtendimento() {
-        return atendimento;
-    }
-
-    public int teste() {
-        return veiculosVaga.size();
     }
 }

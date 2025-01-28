@@ -2,12 +2,17 @@ import simulacao.Simulacao;
 
 /**
  *
- * @author Luiz Merschmann
+ * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
 public class Main {
 
     public static void main(String[] args) {
-        Simulacao sim = new Simulacao();
+
+        int velocidadeSimulacao = 30; // por padrao 50
+
+        int fluxoVeiculos = 4; // por padrao 4
+
+        Simulacao sim = new Simulacao(velocidadeSimulacao, fluxoVeiculos);
         sim.iniciarSimulacao();
     }
 }

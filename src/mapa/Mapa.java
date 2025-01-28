@@ -1,9 +1,7 @@
 package mapa;
 
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 import util.Localizacao;
 import util.StatusGPSVeiculo;
@@ -14,10 +12,12 @@ public class Mapa {
     private final int ALTURA_PADRAO_MAPA = 50;
     private Estacionamento estacionamento;
     private List<Veiculo> veiculos;
+    private int tempoVeiculoVaga;
 
-    public Mapa() {
+    public Mapa(int tempoVeiculoVaga) {
         estacionamento = new Estacionamento();
         veiculos = new ArrayList<>();
+        this.tempoVeiculoVaga = tempoVeiculoVaga;
     }
 
     public void adicionarVeiculo(Veiculo veiculo) {
@@ -29,8 +29,7 @@ public class Mapa {
     }
 
     public void executarUmPasso() {
-        List<Veiculo> veiculosQueJaEstacionaramEJaPodemSerRemovidos = new ArrayList<>();
-        Random random = new Random();
+        List<Veiculo> veiculosParaRemover = new ArrayList<>();
 
         // executar um passo em todos os veiculos do jogo
         for (Veiculo v : veiculos) {
@@ -38,8 +37,8 @@ public class Mapa {
             // caso existir um veiculo bem a sua frente, ele nao anda e espera a proxima oportunidade
             // dois veiculos nao podem ocupar o mesmo lugar no espaço
             if (v.getProximaLocalizacao() != null) {
-                boolean existeVeiculoAFrente = false;
                 List<Localizacao> trechoAFrente = v.getTrechoAFrente();
+                boolean existeVeiculoAFrente = false;
 
                 for (Localizacao l : trechoAFrente) {
                     if (existeVeiculoNaPosicao(l.getY(), l.getX())) {
@@ -47,29 +46,28 @@ public class Mapa {
                     }
                 }
 
-                System.out.println("existe veiculo a frnete -> " + existeVeiculoAFrente);
-
                 if (!existeVeiculoAFrente)
                     v.executarAcao();
-            }
+            } 
 
             // se o veículo chegou ao seu local de destino
             // e o seu local de destino era a entrada do estacionamento
             // e existem vagas disponíveis no estacionamento
             // seta o status INDO_ESTACIONAR no veículo
-            System.out.println(v.getProximaLocalizacao() != null);
-            System.out.println(v.getStatusGPSVeiculo() == StatusGPSVeiculo.INDO_PARA_ENTRADA_ESTACIONAMENTO);
-            System.out.println(v.getProximaLocalizacao() != null);
-            if (v.getProximaLocalizacao() == null 
-                && v.getStatusGPSVeiculo() == StatusGPSVeiculo.INDO_PARA_ENTRADA_ESTACIONAMENTO
-                && estacionamento.existeVagaDisponivel()) {
+            if (v.getProximaLocalizacao() == null && v.getStatusGPSVeiculo().equals(StatusGPSVeiculo.INDO_PARA_ENTRADA_ESTACIONAMENTO)) {
+                int vaga = -1;
 
-                estacionamento.estacionarVeiculo(v, random.nextInt(10, 20));
-                v.setStatusGPSVeiculo(StatusGPSVeiculo.INDO_ESTACIONAR);
+                if (v.getQuantidadeRodas() >= 4) {
+                    vaga = estacionamento.getVagaDisponivel(0, 19);
+                } else {
+                    vaga = estacionamento.getVagaDisponivel(20, 31);
+                }
+              
+                if (vaga != -1 && estacionamento.estacionarVeiculo(v, vaga, tempoVeiculoVaga)) {
+                    v.setStatusGPSVeiculo(StatusGPSVeiculo.INDO_ESTACIONAR);
+                    v.setCaminho(Localizacao.carregarCaminho("data/vaga-estacionamento-" + vaga + "-caminho.txt"));
+                }
             }
-
-            System.out.println(estacionamento.teste());
-            System.out.println(estacionamento.existeVagaDisponivel());
 
             // se o veículo chegou ao seu local de destino
             // e o seu local de destino era a vaga de estacionamento
@@ -80,12 +78,12 @@ public class Mapa {
                 if (estacionamento.desestacionarVeiculo(v)) {
                     // se o veiculo conseguir desestacionar
                     // ele eh removido do sistema
-                    veiculosQueJaEstacionaramEJaPodemSerRemovidos.add(v); 
+                    veiculosParaRemover.add(v); 
                 }
             }
         }
 
-        for (Veiculo v : veiculosQueJaEstacionaramEJaPodemSerRemovidos) {
+        for (Veiculo v : veiculosParaRemover) {
             veiculos.remove(v);
         }
     }
