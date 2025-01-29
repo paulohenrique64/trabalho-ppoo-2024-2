@@ -18,8 +18,8 @@ import veiculos.Veiculo;
  * podendo ser um carro ou uma moto com características aleatórias.
  */
 public class FabricaDeVeiculos {
-    public static final ImagensVeiculo imagensVeiculoCarroAzul = carregarImagensCarroAzul();
-    public static final ImagensVeiculo imagensVeiculoMotoVermelha = carregarImagensMotoVermelha();
+    private static final ImagensVeiculo imagensVeiculoCarroAzul = carregarImagensCarroAzul();
+    private static final ImagensVeiculo imagensVeiculoMotoVermelha = carregarImagensMotoVermelha();
     private static Random rand = new Random();
 
     /**
@@ -49,7 +49,7 @@ public class FabricaDeVeiculos {
      * 
      * @return Um objeto {@link ImagensVeiculo} contendo as imagens do carro azul.
      */
-    private static ImagensVeiculo carregarImagensCarroAzul() {
+    public static ImagensVeiculo carregarImagensCarroAzul() {
         ImagensVeiculo imagensVeiculo = new ImagensVeiculo();
 
         for (Direcao d : Direcao.values()) {
@@ -67,7 +67,7 @@ public class FabricaDeVeiculos {
      * @return Um objeto {@link ImagensVeiculo} contendo as imagens da moto
      *         vermelha.
      */
-    private static ImagensVeiculo carregarImagensMotoVermelha() {
+    public static ImagensVeiculo carregarImagensMotoVermelha() {
         ImagensVeiculo imagensVeiculo = new ImagensVeiculo();
 
         for (Direcao d : Direcao.values()) {

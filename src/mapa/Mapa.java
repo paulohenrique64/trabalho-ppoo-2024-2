@@ -3,6 +3,7 @@ package mapa;
 import java.util.ArrayList;
 import java.util.List;
 
+import utilitarios.FabricaDeVeiculos;
 import utilitarios.Localizacao;
 import utilitarios.StatusGPSVeiculo;
 import veiculos.Veiculo;
@@ -41,6 +42,15 @@ public class Mapa {
      * @param veiculo Veículo a ser adicionado.
      */
     public void adicionarVeiculo(Veiculo veiculo) {
+        veiculos.add(veiculo);
+        veiculo.setCaminho(Localizacao.carregarCaminho("data/caminhos/caminho-ate-entrada.txt"));
+    }
+
+    /**
+     * Gera e adiciona um veículo aleatório ao mapa.
+     */
+    public void gerarEAdicionarVeiculoAleatorio() {
+        Veiculo veiculo = FabricaDeVeiculos.getVeiculoAleatorio();
         veiculos.add(veiculo);
         veiculo.setCaminho(Localizacao.carregarCaminho("data/caminhos/caminho-ate-entrada.txt"));
     }

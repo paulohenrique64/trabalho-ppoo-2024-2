@@ -21,7 +21,7 @@ public class Main {
         // Duracao da simulacao em segundos
         // Minimo: 0
         // Default: 375
-        int duracaoDaSimulacao = 30;
+        int duracaoDaSimulacao = 60;
 
         Simulacao simulacao = new Simulacao(velocidadeSimulacao, fluxoVeiculos, duracaoDaSimulacao);
         simulacao.iniciarSimulacao();

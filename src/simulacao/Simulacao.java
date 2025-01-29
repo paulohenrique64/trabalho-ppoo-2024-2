@@ -4,7 +4,6 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 import mapa.Mapa;
-import utilitarios.FabricaDeVeiculos;
 
 /**
  * Representa a simulação do estacionamento, coordenando a movimentação dos
@@ -68,7 +67,7 @@ public class Simulacao {
 
             // Garante que o número de veículos na entrada do estacionamento não ultrapasse o limite definido
             while (mapa.getQuantidadeVeiculosIndoParaEntradaEstacionamento() < fluxoVeiculos) {
-                mapa.adicionarVeiculo(FabricaDeVeiculos.getVeiculoAleatorio());
+                mapa.gerarEAdicionarVeiculoAleatorio();
             }
 
             // Executa um passo da simulação e atualiza a interface gráfica de acordo com o Mapa
