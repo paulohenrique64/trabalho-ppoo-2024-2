@@ -1,5 +1,6 @@
 package simulacao;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Queue;
 import java.util.Random;
@@ -26,6 +27,8 @@ public class Simulacao {
     private static Random rand = new Random();
     private int velocidadeSimulacao;
     private int fluxoVeiculos;
+    private LocalDateTime horarioInicioSimulacao;
+    private LocalDateTime horarioFimSimulacao;
     private Mapa mapa;
     private JanelaSimulacao janelaSimulacao;
 
@@ -36,24 +39,32 @@ public class Simulacao {
      *                            atualização.
      * @param fluxoVeiculos       Quantidade máxima de veículos que podem estar na
      *                            entrada simultaneamente.
+     * @param duracaoDaSimulacao  Especifica a quantidade de tempo em minutos no qual 
+     *                            a simulação deve permanecer executando.
      */
-    public Simulacao(int velocidadeSimulacao, int fluxoVeiculos) {
+    public Simulacao(int velocidadeSimulacao, int fluxoVeiculos, int duracaoDaSimulacao) {
         this.velocidadeSimulacao = velocidadeSimulacao;
-
-        // Validando a velocidade da simulacao
-        if (velocidadeSimulacao <= 0) 
-            this.velocidadeSimulacao = 1;
-
         this.fluxoVeiculos = fluxoVeiculos;
 
+        // Validando a duracao da simulacao
+        if (duracaoDaSimulacao < 0)
+            duracaoDaSimulacao = 0;
+        
+        // Validando a velocidade da simulacao
+        if (velocidadeSimulacao < 2) 
+            this.velocidadeSimulacao = 2;
+
         // Validando o tamanho do fluxo de veiculos
-        if (fluxoVeiculos <= 0) 
+        if (fluxoVeiculos < 1) 
             this.fluxoVeiculos = 1;
 
-        if (fluxoVeiculos >= 7) 
+        if (fluxoVeiculos > 7) 
             this.fluxoVeiculos = 7;
 
-        this.mapa = new Mapa(velocidadeSimulacao / 2);
+        horarioInicioSimulacao = LocalDateTime.now();
+        horarioFimSimulacao = horarioInicioSimulacao.plusSeconds(duracaoDaSimulacao);
+
+        this.mapa = new Mapa(this.velocidadeSimulacao / 2);
         janelaSimulacao = new JanelaSimulacao(mapa);
     }
 
@@ -66,7 +77,7 @@ public class Simulacao {
      * atualização.
      */
     public void iniciarSimulacao() {
-        while (true) {
+        while (horarioFimSimulacao.compareTo(LocalDateTime.now()) > 0) {
             // Garante que o número de veículos na entrada do estacionamento não ultrapasse o limite definido
             while (mapa.getQuantidadeVeiculosIndoParaEntradaEstacionamento() < fluxoVeiculos) {
                 mapa.adicionarVeiculo(getVeiculoParaSimulacao());
@@ -84,6 +95,17 @@ public class Simulacao {
                 e.printStackTrace();
             }
         }
+
+        // Montar e exibir o popup/mensagem final ao finalizar a simulacao
+        Duration duracao = Duration.between(horarioInicioSimulacao, horarioFimSimulacao);
+        long duracaoEmSegundos = duracao.getSeconds();
+
+        String fraseFinal = String.format("%nA simulação foi finalizada com sucesso.");
+        fraseFinal += String.format("%nTempo de simulação: %d segundos.%n", duracaoEmSegundos);
+        fraseFinal += String.format("Faturamento total do estacionamento: R$ %.2f.%n", mapa.getFaturamentoEstacionamento());
+
+        System.out.println(fraseFinal);
+        janelaSimulacao.exibirPopupFinal(fraseFinal);
     }
 
     /**

@@ -8,6 +8,7 @@ public class Main {
 
     public static void main(String[] args) {
         // Quanto menor, mais rapido a simulacao fica.
+        // Minimo: 2
         // Default: 50
         int velocidadeSimulacao = 50; 
 
@@ -17,7 +18,12 @@ public class Main {
         // Default: 2
         int fluxoVeiculos = 2; 
 
-        Simulacao simulacao = new Simulacao(velocidadeSimulacao, fluxoVeiculos);
+        // Duracao da simulacao em segundos
+        // Minimo: 0
+        // Default: 60
+        int duracaoDaSimulacao = 60;
+
+        Simulacao simulacao = new Simulacao(velocidadeSimulacao, fluxoVeiculos, duracaoDaSimulacao);
         simulacao.iniciarSimulacao();
     }
 }
