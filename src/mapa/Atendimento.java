@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import utilitarios.Ticket;
-import veiculos.Veiculo;
 
 /**
  * Representa a entidade Atendimento, que gerencia a emissão e finalização de
@@ -31,10 +30,12 @@ public class Atendimento {
     /**
      * Gera um novo ticket para um veículo que está entrando no estacionamento.
      * 
-     * @param veiculo Veículo para o qual o ticket será gerado.
+     * @param placaVeiculo                 Placa do veículo para o qual o ticket será gerado.
+     * @param taxaDanificacaoTerreno       Taxa de danificação à terrenos do veículo para
+     *                                     o qual o ticket será gerado.
      */
-    public void gerarNovoTicket(Veiculo veiculo) {
-        Ticket ticket = new Ticket(veiculo);
+    public void gerarNovoTicket(String placaVeiculo, double taxaDanificacaoTerreno) {
+        Ticket ticket = new Ticket(placaVeiculo, taxaDanificacaoTerreno);
         ticketsAbertos.add(ticket);
     }
 
@@ -42,25 +43,22 @@ public class Atendimento {
      * Finaliza o ticket de um veículo ao sair do estacionamento, calculando o
      * faturamento.
      * 
-     * @param veiculo Veículo cujo ticket será finalizado.
+     * @param placaVeiculo Placa do veículo para o qual o ticket será finalizado.
      * @return {@code true} se o ticket foi finalizado com sucesso, {@code false}
      *         caso contrário.
      */
-    public boolean finalizarTicket(Veiculo veiculo) {
+    public boolean finalizarTicket(String placaVeiculo) {
         Ticket ticketEncontrado = null;
 
-        for (Ticket t : ticketsAbertos) {
-            if (t.getPlacaVeiculo().equals(veiculo.getPlaca())) {
+        for (Ticket t : ticketsAbertos) 
+            if (t.getPlacaVeiculo().equals(placaVeiculo)) 
                 ticketEncontrado = t;
-            }
-        }
 
         if (ticketEncontrado == null)
             return false;
 
         faturamentoTotal += ticketEncontrado.getCustoEstacionamento();
         ticketsAbertos.remove(ticketEncontrado);
-
         return true;
     }
 
@@ -69,7 +67,7 @@ public class Atendimento {
      * 
      * @return Valor total faturado pelo estacionamento.
      */
-    public Double getFaturamento() {
+    public double getFaturamento() {
         return faturamentoTotal;
     }
 }

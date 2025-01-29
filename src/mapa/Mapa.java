@@ -27,7 +27,7 @@ public class Mapa {
      * Construtor da classe Mapa.
      * 
      * @param tempoVeiculoVaga Tempo que um veículo permanece estacionado antes de
-     *                         sair.
+     *                         sair da vaga de estacionamento.
      */
     public Mapa(int tempoVeiculoVaga) {
         estacionamento = new Estacionamento();
@@ -63,7 +63,9 @@ public class Mapa {
      * permanência nas vagas e saída do estacionamento.
      */
     public void executarUmPasso() {
-        List<Veiculo> veiculosParaRemover = new ArrayList<>();
+        // Lista para auxiliar na remoção dos veículos que já desestacionaram e sairam do mapa.
+        // Isso é necessário para economizar memória e manter a lista Veículos controlada.
+        List<Veiculo> veiculosParaRemover = new ArrayList<>(); 
 
         for (Veiculo v : veiculos) {
             //
@@ -76,11 +78,12 @@ public class Mapa {
                 boolean existeVeiculoAFrente = false;
 
                 for (Localizacao l : trechoAFrente) 
-                    if (existeVeiculoNaPosicao(l.getY(), l.getX())) 
+                    if (existeVeiculoNaPosicao(l.getX(), l.getY())) 
                         existeVeiculoAFrente = true;
 
                 if (!existeVeiculoAFrente)
                     v.executarAcao();
+
             }
 
             //
@@ -134,7 +137,7 @@ public class Mapa {
      */
     public boolean existeVeiculoNaPosicao(int x, int y) {
         for (Veiculo v : veiculos) 
-            if (v.getLocalizacaoAtual().getX() == y && v.getLocalizacaoAtual().getY() == x)
+            if (v.getLocalizacaoAtual().getX() == x && v.getLocalizacaoAtual().getY() == y)
                 return true;
 
         return false;
@@ -151,7 +154,7 @@ public class Mapa {
         List<Veiculo> veiculosNaPosicao = new ArrayList<>();
 
         for (Veiculo v : veiculos) 
-            if (v.getLocalizacaoAtual().getX() == y && v.getLocalizacaoAtual().getY() == x)
+            if (v.getLocalizacaoAtual().getX() == x && v.getLocalizacaoAtual().getY() == y)
                 veiculosNaPosicao.add(v);
 
         return veiculosNaPosicao;
@@ -198,7 +201,7 @@ public class Mapa {
      * 
      * @return Faturamento total do estacionamento.
      */
-    public Double getFaturamentoEstacionamento() {
+    public double getFaturamentoEstacionamento() {
         return estacionamento.getFaturamento();
     }
 }

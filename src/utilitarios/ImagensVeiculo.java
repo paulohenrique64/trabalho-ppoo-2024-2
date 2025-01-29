@@ -5,9 +5,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Classe que gerencia imagens de um veículo em diferentes direções.
- * Cada veículo pode ter uma imagem associada a cada posição definida na
- * enumeração {@link Direcao}.
+ * Classe que gerencia as imagens de um veículo em diferentes direções.
+ * Cada veículo pode ter uma imagem associada a cada direção definida no
+ * enum {@link Direcao}.
  * 
  * @author Paulo Henrique Ribeiro Alves
  */

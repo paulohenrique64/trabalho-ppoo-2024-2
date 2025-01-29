@@ -3,10 +3,8 @@ package utilitarios;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import veiculos.Veiculo;
-
 /**
- * Representa um ticket de estacionamento, utilizado para armazenar e manipular
+ * Representa um ticket de estacionamento, utilizado para manipular
  * dados referentes à entrada e saída de veículos em estacionamentos.
  * 
  * Um ticket é gerado quando um veículo entra em um estacionamento, armazenando
@@ -16,7 +14,8 @@ import veiculos.Veiculo;
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
 public class Ticket {
-    private Veiculo veiculo;
+    private String placaVeiculo;
+    private double taxaDanificacaoTerreno;
     private LocalDateTime horaChegada;
 
     /**
@@ -25,36 +24,29 @@ public class Ticket {
      * 
      * @param veiculo O veículo que está entrando no estacionamento.
      */
-    public Ticket(Veiculo veiculo) {
-        this.veiculo = veiculo;
+    public Ticket(String placaVeiculo, double taxaDanificacaoTerreno) {
+        this.placaVeiculo = placaVeiculo;
+        this.taxaDanificacaoTerreno = taxaDanificacaoTerreno;
         horaChegada = LocalDateTime.now();
     }
 
     /**
-     * Calcula o custo do estacionamento com base no tempo de permanência do
-     * veículo,
+     * Calcula o custo do estacionamento com base no tempo de permanência do veículo,
      * no espaço ocupado por ele e na taxa de dano ao terreno. O custo é calculado
      * com a seguinte fórmula:
      * 
-     * <pre>
-     * custo = (tempo de permanência em segundos / 5) * largura do espaço ocupado
-     * * taxa de dano ao terreno
-     * </pre>
+     * custo = (tempo de permanência em segundos / 2) * taxa de dano ao terreno
      * 
      * @return O custo do estacionamento para o veículo.
      */
-    public Double getCustoEstacionamento() {
+    public double getCustoEstacionamento() {
         // Calcular o tempo de permanencia em segundos.
         LocalDateTime agora = LocalDateTime.now();
         Duration duracao = Duration.between(horaChegada, agora);
         long segundosNoEstacionamento = duracao.getSeconds();
 
         // Calcular o custo do estacionamento.
-        double custo = (segundosNoEstacionamento / 5.0)
-                * veiculo.getEspacoOcupado().getX()
-                * veiculo.calcularTaxaDanificacaoTerreno();
-
-        // System.out.println("Tempo do veiculo " + veiculo.getPlaca() + " no estacionamento: " + segundosNoEstacionamento + " segundos");
+        double custo = (segundosNoEstacionamento / 2.0) * taxaDanificacaoTerreno;
         return custo;
     }
 
@@ -64,6 +56,6 @@ public class Ticket {
      * @return A placa do veículo.
      */
     public String getPlacaVeiculo() {
-        return veiculo.getPlaca();
+        return placaVeiculo;
     }
 }

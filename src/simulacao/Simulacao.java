@@ -8,11 +8,11 @@ import utilitarios.FabricaDeVeiculos;
 
 /**
  * Representa a simulação do estacionamento, coordenando a movimentação dos
- * veículos
- * e a interação com a interface gráfica.
+ * veículos e a interação com a interface gráfica.
  * 
- * A simulação gerencia a geração de veículos, a atualização do mapa e a
- * exibição da interface gráfica em tempo real.
+ * A simulação gerencia a geração de veículos, a atualização do mapa,
+ * a exibição da interface gráfica em tempo real e o tempo de atualização entre 
+ * cada frame exibido pela interface grafica.
  * 
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
@@ -31,7 +31,8 @@ public class Simulacao {
      *                            atualização.
      * @param fluxoVeiculos       Quantidade máxima de veículos que podem estar na
      *                            entrada simultaneamente.
-     * @param duracaoDaSimulacao  Especifica a quantidade de tempo em minutos no qual 
+     * @param duracaoDaSimulacao  Especifica a quantidade de tempo em minutos no
+     *                            qual
      *                            a simulação deve permanecer executando.
      */
     public Simulacao(int velocidadeSimulacao, int fluxoVeiculos, int duracaoDaSimulacao) {
@@ -40,7 +41,7 @@ public class Simulacao {
 
         // Validar velocidadeSimulacao, fluxoVeiculos e duracaoDaSimulacao
         if (duracaoDaSimulacao < 0) duracaoDaSimulacao = 0;
-        if (velocidadeSimulacao < 2) this.velocidadeSimulacao = 2; 
+        if (velocidadeSimulacao < 2) this.velocidadeSimulacao = 2;
         if (fluxoVeiculos < 1) this.fluxoVeiculos = 1;
         if (fluxoVeiculos > 7) this.fluxoVeiculos = 7;
 
@@ -59,16 +60,18 @@ public class Simulacao {
      * simulação,
      * atualiza a interface gráfica e aguarda um tempo determinado antes da próxima
      * atualização.
+     * 
+     * Todos os veículos se movem de maneira sincronizada.
      */
     public void iniciarSimulacao() {
         while (horarioFimSimulacao.compareTo(LocalDateTime.now()) > 0) {
-            // Garante que o número de veículos na entrada do estacionamento não ultrapasse o limite definido
 
+            // Garante que o número de veículos na entrada do estacionamento não ultrapasse o limite definido
             while (mapa.getQuantidadeVeiculosIndoParaEntradaEstacionamento() < fluxoVeiculos) {
                 mapa.adicionarVeiculo(FabricaDeVeiculos.getVeiculoAleatorio());
             }
 
-            // Executa um passo da simulação, atualiza a interface e o faturamento
+            // Executa um passo da simulação e atualiza a interface gráfica de acordo com o Mapa
             mapa.executarUmPasso();
             janelaSimulacao.atualizarFaturamento(mapa.getFaturamentoEstacionamento());
             janelaSimulacao.atualizarJanelaSimulacao();
@@ -80,18 +83,23 @@ public class Simulacao {
     }
 
     public void finalizarSimulacao() {
-        // Montar e exibir o popup/mensagem final ao finalizar a simulacao
+        // Montar e exibir o popup/mensagem final ao finalizar a simulação
         Duration duracao = Duration.between(horarioInicioSimulacao, horarioFimSimulacao);
         long duracaoEmSegundos = duracao.getSeconds();
 
         String fraseFinal = String.format("%nA simulação foi finalizada com sucesso.");
         fraseFinal += String.format("%nTempo de simulação: %d segundos.%n", duracaoEmSegundos);
-        fraseFinal += String.format("Faturamento total do estacionamento: R$ %.2f.%n", mapa.getFaturamentoEstacionamento());
+        fraseFinal += String.format("Faturamento total do estacionamento: R$ %.2f.%n",
+                mapa.getFaturamentoEstacionamento());
 
         System.out.println(fraseFinal);
         janelaSimulacao.exibirPopupFinal(fraseFinal);
     }
 
+    /**
+     * Pausa a execução da simulação pelo tempo determinado pela velocidade da
+     * simulação (em milissegundos).
+     */
     public void pausarSimulacao() {
         // Tempo de espera entre cada atualização
         try {

@@ -11,7 +11,7 @@ import veiculos.Veiculo;
 
 /**
  * Representa a entidade Estacionamento, onde ocorrerá toda a lógica e fluxo de
- * veículos entrando e saindo.
+ * veículos estacionados.
  * Gerencia as vagas disponíveis, controla o tempo de permanência dos veículos e
  * calcula o faturamento.
  * 
@@ -39,7 +39,7 @@ public class Estacionamento {
     }
 
     /**
-     * Retorna uma vaga disponível aleatória.
+     * Retorna uma vaga disponível.
      * 
      * @return Número da vaga disponível ou -1 se não houver vagas.
      */
@@ -51,7 +51,7 @@ public class Estacionamento {
     }
 
     /**
-     * Retorna uma vaga disponível dentro de um intervalo específico.
+     * Retorna uma vaga disponível aleatória dentro de um intervalo específico.
      * 
      * @param rangeInicial Início do intervalo de vagas.
      * @param rangeFinal   Fim do intervalo de vagas.
@@ -85,15 +85,15 @@ public class Estacionamento {
      *         caso contrário.
      */
     public boolean estacionarVeiculo(Veiculo v, int vaga, int tempoDeEstacionamento) {
+        // Se a vaga já estiver sendo usada por outro veículo
         if (veiculosVaga.values().contains(vaga)) {
             return false;
         }
 
-        vagasDisponiveis.remove(Integer.valueOf(vaga));
         veiculosVaga.put(v, vaga);
-        atendimento.gerarNovoTicket(v);
         veiculosTempo.put(v, Instant.now().plusSeconds(tempoDeEstacionamento));
-
+        vagasDisponiveis.remove(Integer.valueOf(vaga));
+        atendimento.gerarNovoTicket(v.getPlaca(), v.calcularTaxaDanificacaoTerreno());
         return true;
     }
 
@@ -119,14 +119,16 @@ public class Estacionamento {
      *         caso contrário.
      */
     public boolean desestacionarVeiculo(Veiculo v) {
+        // Se o veículo não estive estacionado
         if (!veiculosVaga.containsKey(v))
             return false;
 
+        // Verificar se o tempo expirou
         if (veiculosTempo.get(v).compareTo(Instant.now()) < 0) {
             vagasDisponiveis.add(veiculosVaga.get(v));
             veiculosVaga.remove(v);
             veiculosTempo.remove(v);
-            atendimento.finalizarTicket(v);
+            atendimento.finalizarTicket(v.getPlaca());
             return true;
         }
 
@@ -138,7 +140,7 @@ public class Estacionamento {
      * 
      * @return O valor total do faturamento.
      */
-    public Double getFaturamento() {
+    public double getFaturamento() {
         return atendimento.getFaturamento();
     }
 }

@@ -13,9 +13,9 @@ import veiculos.Veiculo;
  * Nela, os veículos são desenhados a cada atualização da tela conforme se movem
  * no mapa.
  * 
- * Esta classe herda de JFrame e exibe uma janela contendo o mapa do
- * estacionamento,
- * a visão dos veículos e o faturamento gerado.
+ * Esta classe herda de JFrame e exibe uma janela que irá conter o mapa do
+ * estacionamento (um JPanel com uma imagem do estacionamento de fundo,
+ * a visão dos veículos e o faturamento gerado),
  * 
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
@@ -54,16 +54,14 @@ public class JanelaSimulacao extends JFrame {
     public void atualizarJanelaSimulacao() {
         visaoEstacionamento.preparePaint();
 
-        for (int i = 0; i < mapa.getAltura(); i++) {
-            for (int j = 0; j < mapa.getLargura(); j++) {
-                java.util.List<Veiculo> veiculosNaPosicao = mapa.getVeiculoNaPosicao(i, j);
+        for (int y = 0; y < mapa.getAltura(); y++) {
+            for (int x = 0; x < mapa.getLargura(); x++) {
+                java.util.List<Veiculo> veiculosNaPosicao = mapa.getVeiculoNaPosicao(x, y);
 
-                for (Veiculo veiculo : veiculosNaPosicao) {
-                    Localizacao localizacao = veiculo.getLocalizacaoAtual();
-                    visaoEstacionamento.desenharImagem(localizacao.getX(), localizacao.getY(), veiculo.getImagem(),
-                            veiculo.getEspacoOcupado());
+                for (Veiculo v : veiculosNaPosicao) {
+                    Localizacao l = v.getLocalizacaoAtual();
+                    visaoEstacionamento.desenharImagem(l.getX(), l.getY(), v.getImagem(), v.getEspacoOcupado());
                 }
-
             }
         }
 
@@ -87,7 +85,7 @@ public class JanelaSimulacao extends JFrame {
      * 
      * @param valor O valor a ser exibido no label.
      */
-    public void atualizarFaturamento(Double valor) {
+    public void atualizarFaturamento(double valor) {
         faturamentoLabel.setText(String.format("Faturamento: R$ %.2f", valor));
     }
 

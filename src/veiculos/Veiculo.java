@@ -14,8 +14,7 @@ import utilitarios.StatusGPSVeiculo;
 /**
  * Representa um veículo na simulação, e possui informações
  * sua localização, caminho, imagem atual e status do GPS. Esta classe serve
- * como
- * base para os tipos específicos de veículos que podem ser criados.
+ * como base para os tipos específicos de veículos que podem ser criados.
  * 
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
@@ -38,8 +37,7 @@ public abstract class Veiculo {
      * @param imagensVeiculo  O conjunto de imagens do veículo para diferentes
      *                        direções.
      */
-    public Veiculo(String placa, int quantidadeRodas, Localizacao localizacao, Queue<Localizacao> caminho,
-            ImagensVeiculo imagensVeiculo) {
+    public Veiculo(String placa, int quantidadeRodas, Localizacao localizacao, Queue<Localizacao> caminho, ImagensVeiculo imagensVeiculo) {
         this.placa = placa;
         this.quantidadeRodas = quantidadeRodas;
         this.localizacaoAtual = localizacao;
@@ -87,7 +85,7 @@ public abstract class Veiculo {
      * @return A localização atual do veículo.
      */
     public Localizacao getLocalizacaoAtual() {
-        return localizacaoAtual;
+        return new Localizacao(localizacaoAtual.getX(), localizacaoAtual.getY());
     }
 
     /**
@@ -117,11 +115,11 @@ public abstract class Veiculo {
     public abstract Localizacao getEspacoOcupado();
 
     /**
-     * Calcula a taxa de dano que o veículo causaria ao terreno.
+     * Calcula a taxa de dano que um veículo genérico causaria ao terreno.
      * 
      * @return A taxa de dano do veículo.
      */
-    public Double calcularTaxaDanificacaoTerreno() {
+    public double calcularTaxaDanificacaoTerreno() {
         return 0.7;
     }
 
@@ -131,10 +129,11 @@ public abstract class Veiculo {
      * @return A próxima localização no caminho do veículo.
      */
     public Localizacao getProximaLocalizacao() {
-        if (caminho == null)
+        if (caminho == null || caminho.peek() == null)
             return null;
-
-        return caminho.peek();
+        
+        Localizacao proxLoc = caminho.peek();
+        return new Localizacao(proxLoc.getX(), proxLoc.getY());
     }
 
     /**
@@ -142,10 +141,10 @@ public abstract class Veiculo {
      * Se o veículo já chegou ao destino, retorna false.
      * 
      * @return True se a ação foi executada com sucesso (o veículo se moveu);
-     *         False caso contrário (veículo chegou ao destino).
+     *         False caso contrário.
      */
     public boolean executarAcao() {
-        if (caminho.size() == 0) // se o veiculo ja chegou ao seu destino
+        if (caminho.size() == 0) // Se o veiculo ja chegou ao seu destino
             return false;
 
         Localizacao localizacaoAnterior = getLocalizacaoAtual();
@@ -162,12 +161,12 @@ public abstract class Veiculo {
     }
 
     /**
-     * Determina a direção que o veículo deve seguir com base nas mudanças de
+     * Determina a direção que o veículo está apontando com base nas mudanças de
      * posição entre duas localizações.
      * 
      * @param localizacaoAtual   A localização atual do veículo.
      * @param proximaLocalizacao A próxima localização do veículo.
-     * @return A direção que o veículo deve seguir.
+     * @return A direção que o veículo está apontando.
      */
     protected static Direcao determinarDirecao(Localizacao localizacaoAtual, Localizacao proximaLocalizacao) {
         int variacaoDeX = proximaLocalizacao.getX() - localizacaoAtual.getX();
@@ -191,7 +190,7 @@ public abstract class Veiculo {
         if (variacaoDeX > 0 && variacaoDeY > 0)
             return Direcao.DIAGONAL_DIREITA_BAIXO;
 
-        return Direcao.CIMA; // posicao default
+        return Direcao.CIMA; // Posição default
     }
 
     /**
@@ -244,7 +243,7 @@ public abstract class Veiculo {
     /**
      * Atualiza a imagem do veículo com base na direção fornecida.
      * 
-     * @param direcao A direção para a qual o veículo deve ser orientado.
+     * @param direcao A direção que o veículo está apontando.
      */
     public void setImagem(Direcao direcao) {
         imagemAtual = imagensVeiculo.getImagem(direcao);

@@ -9,10 +9,7 @@ import utilitarios.Localizacao;
  * Representa um carro no sistema, que é uma subclasse de Veiculo.
  * 
  * O carro tem um atributo adicional chamado 'cavalosDePotencia', que representa
- * a potência do motor do carro em cavalos de potência. A classe redefine o
- * método {@link Veiculo#getEspacoOcupado()} para especificar o espaço ocupado
- * pelo carro no ambiente e também redefine o cálculo da taxa de dano ao
- * terreno.
+ * a potência do motor do carro em cavalos de potência.
  * 
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
@@ -46,8 +43,7 @@ public class Carro extends Veiculo {
      * @param imagensVeiculo    O conjunto de imagens do carro para diferentes
      *                          direções.
      */
-    public Carro(String placa, Localizacao localizacao, Queue<Localizacao> caminho, int quantidadeRodas,
-            int cavalosDePotencia, ImagensVeiculo imagensVeiculo) {
+    public Carro(String placa, Localizacao localizacao, Queue<Localizacao> caminho, int quantidadeRodas, int cavalosDePotencia, ImagensVeiculo imagensVeiculo) {
         super(placa, quantidadeRodas, localizacao, caminho, imagensVeiculo);
         this.cavalosDePotencia = cavalosDePotencia;
     }
@@ -65,13 +61,12 @@ public class Carro extends Veiculo {
 
     /**
      * Calcula a taxa de dano que o carro causaria ao terreno, baseada na
-     * potência do motor (cavalos de potência). A taxa de dano é ajustada com base
-     * nos cavalos de potência do carro.
+     * potência do motor (cavalos de potência).
      * 
      * @return A taxa de dano do terreno causada pelo carro.
      */
     @Override
-    public Double calcularTaxaDanificacaoTerreno() {
+    public double calcularTaxaDanificacaoTerreno() {
         return super.calcularTaxaDanificacaoTerreno() * (cavalosDePotencia / 100);
     }
 }

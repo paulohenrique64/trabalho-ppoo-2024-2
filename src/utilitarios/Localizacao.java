@@ -81,13 +81,11 @@ public class Localizacao {
 
                 if (coordenadas.length == 2) {
                     coordenadas = coordenadas[1].split("\"")[1].split(";");
-                    int x = Integer.parseInt(coordenadas[0]);
-                    int y = Integer.parseInt(coordenadas[1]);
-
-                    // Aqui, os pontos x e y são invertidos para a posição
-                    // ficar compativel com as coordenadas do JPanel,
-                    // que por algum motivo do além, não seguem a orientação mais intuitiva
-                    caminho.add(new Localizacao(y, x)); 
+                    // Invertendo os pontos x e y, pois nos arquivos dos caminhos
+                    // os pontos x e y estao invertidos
+                    int x = Integer.parseInt(coordenadas[1]);
+                    int y = Integer.parseInt(coordenadas[0]);
+                    caminho.add(new Localizacao(x, y)); 
                 }
             }
         } catch (IOException e) {
