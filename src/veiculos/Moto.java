@@ -23,6 +23,21 @@ public class Moto extends Veiculo {
      * Constrói uma nova moto com os parâmetros fornecidos.
      * 
      * @param placa           A placa da moto.
+     * @param quantidadeRodas A quantidade de rodas da moto.
+     * @param cilindradas     O tamanho do motor da moto, em centímetros cúbicos
+     *                        (cc).
+     * @param imagensVeiculo  O conjunto de imagens da moto para diferentes
+     *                        direções.
+     */
+    public Moto(String placa,int quantidadeRodas, int cilindradas, ImagensVeiculo imagensVeiculo) {
+        super(placa, quantidadeRodas, imagensVeiculo);
+        this.cilindradas = cilindradas;
+    }
+
+    /**
+     * Constrói uma nova moto com os parâmetros fornecidos.
+     * 
+     * @param placa           A placa da moto.
      * @param localizacao     A localização inicial da moto.
      * @param caminho         A fila de localizações que a moto irá percorrer.
      * @param quantidadeRodas A quantidade de rodas da moto.

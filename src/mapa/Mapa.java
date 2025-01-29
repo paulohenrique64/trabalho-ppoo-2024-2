@@ -42,6 +42,7 @@ public class Mapa {
      */
     public void adicionarVeiculo(Veiculo veiculo) {
         veiculos.add(veiculo);
+        veiculo.setCaminho(Localizacao.carregarCaminho("data/caminhos/caminho-ate-entrada.txt"));
     }
 
     /**

@@ -50,6 +50,29 @@ public abstract class Veiculo {
     }
 
     /**
+     * Constrói um novo veículo com os parâmetros fornecidos.
+     * 
+     * @param placa           A placa do veículo.
+     * @param quantidadeRodas A quantidade de rodas do veículo.
+     * @param imagensVeiculo  O conjunto de imagens do veículo para diferentes
+     *                        direções.
+     */
+    public Veiculo(String placa, int quantidadeRodas, ImagensVeiculo imagensVeiculo) {
+        this.placa = placa;
+        this.quantidadeRodas = quantidadeRodas;
+        // A localização default deve ser (100, 100), pois quando o veículo for instanciado pela primeira vez
+        // antes de executar um passo e fazer o veículo andar,
+        // será verificado se o veículo chegou ao seu destino, que por sinal existe mas ainda não foi percorrido,
+        // logo, se o caminho ainda não foi percorrido, a localização atual ainda não foi setada
+        // então inicialmente precisamos setar a localização atual aqui
+        this.localizacaoAtual = new Localizacao(100, 100); 
+        this.caminho = null;
+        this.imagensVeiculo = imagensVeiculo;
+        this.status = StatusGPSVeiculo.INDO_PARA_ENTRADA_ESTACIONAMENTO;
+        this.imagemAtual = imagensVeiculo.getImagem(Direcao.CIMA); // imagem default
+    }
+
+    /**
      * Retorna a quantidade de rodas do veículo.
      * 
      * @return A quantidade de rodas do veículo.
@@ -74,15 +97,6 @@ public abstract class Veiculo {
      */
     public Image getImagem() {
         return imagemAtual;
-    }
-
-    /**
-     * Atualiza a localização do veículo.
-     * 
-     * @param localizacaoAtual A nova localização do veículo.
-     */
-    public void setLocalizacaoAtual(Localizacao localizacaoAtual) {
-        this.localizacaoAtual = localizacaoAtual;
     }
 
     /**
@@ -117,6 +131,9 @@ public abstract class Veiculo {
      * @return A próxima localização no caminho do veículo.
      */
     public Localizacao getProximaLocalizacao() {
+        if (caminho == null)
+            return null;
+
         return caminho.peek();
     }
 
@@ -135,7 +152,7 @@ public abstract class Veiculo {
         Localizacao proximaLocalizacao = caminho.poll();
 
         // atualizar localizacao atual
-        setLocalizacaoAtual(proximaLocalizacao);
+        localizacaoAtual = proximaLocalizacao;
 
         // atualizar a imagem do veiculo
         Direcao dir = determinarDirecao(localizacaoAnterior, proximaLocalizacao);
@@ -189,7 +206,8 @@ public abstract class Veiculo {
         int cont = 0;
 
         while (iterator.hasNext() && cont < 10) {
-            pedacoDoCaminhoAFrente.add(iterator.next());
+            Localizacao pedacoCaminho = iterator.next();
+            pedacoDoCaminhoAFrente.add(pedacoCaminho);
             cont++;
         }
 

@@ -23,6 +23,21 @@ public class Carro extends Veiculo {
      * Constrói um novo carro com os parâmetros fornecidos.
      * 
      * @param placa             A placa do carro.
+     * @param quantidadeRodas   A quantidade de rodas do carro.
+     * @param cavalosDePotencia A potência do motor do carro, em cavalos de potência
+     *                          (cv).
+     * @param imagensVeiculo    O conjunto de imagens do carro para diferentes
+     *                          direções.
+     */
+    public Carro(String placa, int quantidadeRodas, int cavalosDePotencia, ImagensVeiculo imagensVeiculo) {
+        super(placa, quantidadeRodas, imagensVeiculo);
+        this.cavalosDePotencia = cavalosDePotencia;
+    }
+
+    /**
+     * Constrói um novo carro com os parâmetros fornecidos.
+     * 
+     * @param placa             A placa do carro.
      * @param localizacao       A localização inicial do carro.
      * @param caminho           A fila de localizações que o carro irá percorrer.
      * @param quantidadeRodas   A quantidade de rodas do carro.

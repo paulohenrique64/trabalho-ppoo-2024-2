@@ -5,16 +5,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
- * Classe abstrata que gerencia imagens de um veículo em diferentes direções.
+ * Classe que gerencia imagens de um veículo em diferentes direções.
  * Cada veículo pode ter uma imagem associada a cada posição definida na
  * enumeração {@link Direcao}.
  * 
- * Essa classe pode ser estendida para permitir a manipulação de imagens
- * específicas de diferentes tipos de veículos.
- * 
  * @author Paulo Henrique Ribeiro Alves
  */
-public abstract class ImagensVeiculo {
+public class ImagensVeiculo {
     private Map<Direcao, Image> imagens; // Mapeia cada direção a uma imagem correspondente
 
     /**
