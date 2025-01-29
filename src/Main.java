@@ -7,12 +7,17 @@ import simulacao.Simulacao;
 public class Main {
 
     public static void main(String[] args) {
+        // Quanto menor, mais rapido a simulacao fica.
+        // Default: 50
+        int velocidadeSimulacao = 50; 
 
-        int velocidadeSimulacao = 20; // por padrao 50
+        // Quanto maior, maior sera a quantidade de veiculos na simulacao.
+        // Maximo: 7
+        // Minimo: 1
+        // Default: 2
+        int fluxoVeiculos = 2; 
 
-        int fluxoVeiculos = 2; // por padrao 2
-
-        Simulacao sim = new Simulacao(velocidadeSimulacao, fluxoVeiculos);
-        sim.iniciarSimulacao();
+        Simulacao simulacao = new Simulacao(velocidadeSimulacao, fluxoVeiculos);
+        simulacao.iniciarSimulacao();
     }
 }

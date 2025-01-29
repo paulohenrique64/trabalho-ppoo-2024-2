@@ -1,22 +1,23 @@
 package utilitarios;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
-import java.util.Random;
 
 /**
  * Representa uma localização no mapa
- * @author David J. Barnes and Michael Kolling and Luiz Merschmann
+ * 
+ * @author David J. Barnes and Michael Kolling, Luiz Merschmann and Paulo Henrique Ribeiro Alves
  */
 public class Localizacao {
     private int x;
     private int y;
-    private static Random rand = new Random();
-    
+
     /**
      * Representa uma localização na cidade
+     * 
      * @param x Coordenada x: deve ser maior ou igual a 0.
      * @param y Coordenada y: deve ser maior ou igual a 0.
      */
@@ -32,62 +33,41 @@ public class Localizacao {
     public int getY() {
         return y;
     }
-    
-    /**
-     * Gera a localizacao para se mover visando alcançar o destino
-     * @param localizacaoDestino: localizacao que se deseja alcancar.
-     * @return Localizacao para onde se deve ir
-     */
-    public Localizacao proximaLocalizacao(Localizacao localizacaoDestino){
-        if(localizacaoDestino.equals(this)){//Verifica se já alcancou o destino
-            return localizacaoDestino;
-        }else{
-            int destX = localizacaoDestino.getX();
-            int destY = localizacaoDestino.getY();
-            int deslocX = x < destX ? 1 : x > destX ? -1 : 0;//Deslocamento de 1 ou 0 ou -1 posição em x
-            int deslocY = y < destY ? 1 : y > destY ? -1 : 0;//Deslocamento de 1 ou 0 ou -1 posição em y
-            Localizacao novaLocalizacao;
-            if(deslocX != 0 && deslocY != 0){//Se nenhuma coordenada coincide com a localizacao destino
-                if(rand.nextInt(2) == 0){//Atualizar x
-                    novaLocalizacao = new Localizacao(x + deslocX, y);
-                }else{//Atualizar y
-                    novaLocalizacao = new Localizacao(x, y + deslocY);
-                }
-            }else{
-                if(deslocX != 0) novaLocalizacao = new Localizacao(x + deslocX, y);
-                else novaLocalizacao = new Localizacao(x, y + deslocY);
-            }
-            return novaLocalizacao;
-        }
-    }
-    
+
     /**
      * Verificacao de igualdade de conteudo de objetos do tipo Localizacao.
+     * 
      * @return true: se a localizacao é igual.
      *         false: caso contrario.
      */
     @Override
-    public boolean equals(Object obj){
-        if(this == obj){
+    public boolean equals(Object obj) {
+        if (this == obj) {
             return true;
-        }else if(!(obj instanceof Localizacao)){
+        } else if (!(obj instanceof Localizacao)) {
             return false;
-        }else{
+        } else {
             Localizacao outro = (Localizacao) obj;
             return x == outro.x && y == outro.y;
         }
     }
-    
+
     /**
      * @return A representacao da localizacao.
      */
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "(" + x + ", " + y + ")";
     }
 
-    // carrega as coordenadas do arquivo recebido como parametro em uma fila (caminho a ser percorrido pelo veiculo)
+    /**
+     * Carrega as coordenadas do arquivo recebido como parâmetro e armazena em uma
+     * fila,
+     * representando o caminho a ser percorrido por um veículo.
+     * 
+     * @param caminhoArquivo Caminho do arquivo que contém as coordenadas.
+     * @return Uma fila contendo as localizações extraídas do arquivo.
+     */
     public static Queue<Localizacao> carregarCaminho(String caminhoArquivo) {
         Queue<Localizacao> caminho = new LinkedList<>();
 
@@ -95,7 +75,7 @@ public class Localizacao {
             String linha;
             String[] coordenadas;
 
-            // lendo o restante do caminho ate a vaga de estacionamento
+            // Lendo as coordenadas do arquivo e armazenando na fila
             while ((linha = leitor.readLine()) != null) {
                 coordenadas = linha.split(" ");
 
@@ -103,7 +83,11 @@ public class Localizacao {
                     coordenadas = coordenadas[1].split("\"")[1].split(";");
                     int x = Integer.parseInt(coordenadas[0]);
                     int y = Integer.parseInt(coordenadas[1]);
-                    caminho.add(new Localizacao(y, x));
+
+                    // Aqui, os pontos x e y são invertidos para a posição
+                    // ficar compativel com as coordenadas do JPanel,
+                    // que por algum motivo do além, não seguem a orientação mais intuitiva
+                    caminho.add(new Localizacao(y, x)); 
                 }
             }
         } catch (IOException e) {
@@ -112,5 +96,5 @@ public class Localizacao {
 
         return caminho;
     }
-    
+
 }

@@ -1,5 +1,12 @@
 package utilitarios;
 
+/**
+ * Enumeração que representa as direções possíveis de movimentação dentro do mapa do simulador.
+ * Pode ser utilizada para indicar a direção do deslocamento de veículos ou para
+ * controle de navegação.
+ * 
+ * @author Paulo Henrique Ribeiro Alves
+ */
 public enum Direcao {
     DIREITA,
     ESQUERDA,

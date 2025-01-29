@@ -1,5 +1,6 @@
 package simulacao;
 
+import java.time.LocalDateTime;
 import java.util.Queue;
 import java.util.Random;
 
@@ -12,67 +13,102 @@ import veiculos.Moto;
 import veiculos.Veiculo;
 
 /**
- * Representa a área do sistema onde será realizada a comunicação entre a interface (JanelaSimulacao) 
- * e o funcionamento interno do sistema (Estacionamento)
+ * Representa a simulação do estacionamento, coordenando a movimentação dos
+ * veículos
+ * e a interação com a interface gráfica.
+ * 
+ * A simulação gerencia a geração de veículos, a atualização do mapa e a
+ * exibição da interface gráfica em tempo real.
+ * 
  * @author Paulo Henrique Ribeiro Alves and Kauê Oliveira Silva
  */
 public class Simulacao {
+    private static Random rand = new Random();
     private int velocidadeSimulacao;
     private int fluxoVeiculos;
     private Mapa mapa;
     private JanelaSimulacao janelaSimulacao;
 
+    /**
+     * Construtor da simulação.
+     * 
+     * @param velocidadeSimulacao Intervalo de tempo (em milissegundos) entre cada
+     *                            atualização.
+     * @param fluxoVeiculos       Quantidade máxima de veículos que podem estar na
+     *                            entrada simultaneamente.
+     */
     public Simulacao(int velocidadeSimulacao, int fluxoVeiculos) {
         this.velocidadeSimulacao = velocidadeSimulacao;
+
+        // Validando a velocidade da simulacao
+        if (velocidadeSimulacao <= 0) 
+            this.velocidadeSimulacao = 1;
+
         this.fluxoVeiculos = fluxoVeiculos;
+
+        // Validando o tamanho do fluxo de veiculos
+        if (fluxoVeiculos <= 0) 
+            this.fluxoVeiculos = 1;
+
+        if (fluxoVeiculos >= 7) 
+            this.fluxoVeiculos = 7;
+
         this.mapa = new Mapa(velocidadeSimulacao / 2);
         janelaSimulacao = new JanelaSimulacao(mapa);
     }
 
-    // este metodo, tem o papel de ser a ponte de comunicacao entre as classes Mapa e JanelaSimulacao
-    //
-    // os veiculos sao instanciados aqui e enviados para uma instancia de Mapa
-    // que por sua vez, junto a uma instancia de Estacionamento, gerenciar as vagas, entrada de veiculos, tickets, etc
-    //
-    // uma instancia de JanelaSimulacao, contem essa mesma instancia de Mapa,
-    // logo, todos os veiculos presentes na instancia de Mapa, podem ser acessados e devidamente renderizados
-    // na instancia de JanelaSimulacao
+    /**
+     * Inicia a simulação do estacionamento.
+     * 
+     * A cada iteração, a simulação adiciona veículos ao mapa, executa um passo na
+     * simulação,
+     * atualiza a interface gráfica e aguarda um tempo determinado antes da próxima
+     * atualização.
+     */
     public void iniciarSimulacao() {
-        Random random = new Random();
-        
         while (true) {
-            // spawnandos os veiculos no mapa
-            // cada veiculo recem spawnado, por padrao,
-            // tem como destino e status atual a entrada do estacionamento
+            // Garante que o número de veículos na entrada do estacionamento não ultrapasse o limite definido
             while (mapa.getQuantidadeVeiculosIndoParaEntradaEstacionamento() < fluxoVeiculos) {
-                Veiculo veiculo = null;
-                String placa = String.valueOf(random.nextInt(10000));
-                Queue<Localizacao> caminho = Localizacao.carregarCaminho("data/caminhos/caminho-ate-entrada.txt");
-                Localizacao locI = new Localizacao(100, 100); // localizacao inicial do veiculo no mapa
-                
-                // chances de 7 em 10 de spawnar um carro
-                if (random.nextInt(10) > 2) {
-                    int cavalosDePotencia = random.nextInt(170) + 50;
-                    veiculo = new Carro(placa, locI,caminho,4, cavalosDePotencia, new ImagensCarroAzul()); 
-                } else {
-                    int cilindradas = random.nextInt(200) + 50;
-                    veiculo = new Moto(placa, locI, caminho, 2, cilindradas, new ImagensMotoVermelha());
-                }
-
-                if (veiculo != null)
-                    mapa.adicionarVeiculo(veiculo);
+                mapa.adicionarVeiculo(getVeiculoParaSimulacao());
             }
 
+            // Executa um passo da simulação, atualiza a interface e o faturamento
             mapa.executarUmPasso();
             janelaSimulacao.atualizarFaturamento(mapa.getFaturamentoEstacionamento());
             janelaSimulacao.atualizarJanelaSimulacao();
 
-            // tempo entre cada atualizacao da imagem 60 -> intervalo de 60 milisegundos entre cada atualizacao da imagem
-            try { 
-                Thread.sleep(velocidadeSimulacao); 
+            // Tempo de espera entre cada atualização
+            try {
+                Thread.sleep(velocidadeSimulacao);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Cria e retorna um novo veículo para ser adicionado à simulação.
+     * 
+     * O veículo pode ser um carro ou uma moto, gerado aleatoriamente.
+     * Existe uma chance de 70% de ser um carro e 30% de ser uma moto.
+     * 
+     * @return Um novo objeto do tipo {@link Veiculo}.
+     */
+    public Veiculo getVeiculoParaSimulacao() {
+        Queue<Localizacao> caminho = Localizacao.carregarCaminho("data/caminhos/caminho-ate-entrada.txt");
+        String placa = rand.nextInt(10000) + "-" + LocalDateTime.now().getNano();
+        Localizacao localizacaoInicial = new Localizacao(100, 100);
+        Veiculo veiculo = null;
+
+        // Define aleatoriamente se o veículo será um carro ou uma moto
+        if (rand.nextInt(10) > 2) {
+            int cavalosDePotencia = rand.nextInt(170) + 50;
+            veiculo = new Carro(placa, localizacaoInicial, caminho, 4, cavalosDePotencia, new ImagensCarroAzul());
+        } else {
+            int cilindradas = rand.nextInt(200) + 50;
+            veiculo = new Moto(placa, localizacaoInicial, caminho, 2, cilindradas, new ImagensMotoVermelha());
+        }
+
+        return veiculo;
     }
 }
